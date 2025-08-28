@@ -1,0 +1,13 @@
+# Node / React
+node_modules/
+build/
+dist/
+out-tsc/
+
+# Java / Spring Boot
+target/
+*.log
+
+# Docker / temporary
+docker-compose.override.yml
+*.env
