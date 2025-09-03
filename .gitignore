@@ -116,7 +116,7 @@ grafana/
 # Node / React
 # ------------------------------
 # Node modules
-/node_modules/
+node_modules/
 
 # Build outputs
 /dist/
@@ -191,11 +191,4 @@ jest.config.js
 /out/
 storybook-static/
 
-
-# ------------------------------
-# Stress Testing / k6
-# ------------------------------
-*.csv
-*.json
-*.html
 
