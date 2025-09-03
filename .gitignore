@@ -58,9 +58,6 @@ $RECYCLE.BIN/
 # ------------------------------
 docker-compose.override.yml
 *.env
-**/Dockerfile
-**/docker-compose.yml
-**/docker-compose.*.yml
 /volumes/
 prometheus-data/
 grafana-data/
