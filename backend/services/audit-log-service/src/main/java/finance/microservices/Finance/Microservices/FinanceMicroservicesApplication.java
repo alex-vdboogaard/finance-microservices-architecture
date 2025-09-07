@@ -1,15 +1,20 @@
 package finance.microservices.Finance.Microservices;
 
-import finance.microservices.audit.AuditLog;
-import finance.microservices.audit.AuditLogRepository;
+import java.time.LocalDateTime;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import java.time.LocalDateTime;
+import finance.microservices.audit.AuditLog;
+import finance.microservices.audit.AuditLogRepository;
 
 @SpringBootApplication(scanBasePackages = "finance.microservices")
+@EnableJpaRepositories(basePackages = "finance.microservices.audit")
+@EntityScan(basePackages = "finance.microservices.audit")
 public class FinanceMicroservicesApplication {
 
 	public static void main(String[] args) {
