@@ -1,0 +1,6 @@
+/Users/alex/projects/finance-microservices-architecture/backend/services/audit-log-service/src/main/java/finance/microservices/Finance/Microservices/FinanceMicroservicesApplication.java
+/Users/alex/projects/finance-microservices-architecture/backend/services/audit-log-service/src/main/java/finance/microservices/audit/AuditLog.java
+/Users/alex/projects/finance-microservices-architecture/backend/services/audit-log-service/src/main/java/finance/microservices/audit/AuditLogConsumer.java
+/Users/alex/projects/finance-microservices-architecture/backend/services/audit-log-service/src/main/java/finance/microservices/audit/AuditLogController.java
+/Users/alex/projects/finance-microservices-architecture/backend/services/audit-log-service/src/main/java/finance/microservices/audit/AuditLogRepository.java
+/Users/alex/projects/finance-microservices-architecture/backend/services/audit-log-service/src/main/java/finance/microservices/audit/AuditLogService.java
