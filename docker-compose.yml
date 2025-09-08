@@ -11,3 +11,30 @@ services:
     command: sh -c "npm install && npm run dev"
     environment:
       - CHOKIDAR_USEPOLLING=true
+
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: audit_db
+    ports:
+      - "3306:3306"
+
+  audit-log-service:
+    build:
+      context: ./services/audit-log-service
+      dockerfile: Dockerfile
+    container_name: audit-log-service
+    restart: always
+    ports:
+      - "9003:9003"
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_NAME=audit_db
+      - DB_USERNAME=root
+      - DB_PASSWORD=password
+    depends_on:
+      - mysql
