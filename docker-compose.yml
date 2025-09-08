@@ -7,7 +7,7 @@ services:
       - ./frontend:/app
       - /app/node_modules
     ports:
-      - "5173:5173"
+      - "3000:3000"
     command: sh -c "npm install && npm run dev"
     environment:
       - CHOKIDAR_USEPOLLING=true
@@ -20,21 +20,41 @@ services:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: audit_db
     ports:
-      - "3306:3306"
+      - "3307:3306"
 
-  audit-log-service:
+  # audit-log-service:
+  #   build:
+  #     context: ./services/audit-log-service
+  #     dockerfile: Dockerfile
+  #   container_name: audit-log-service
+  #   restart: always
+  #   ports:
+  #     - "9003:9003"
+  #   environment:
+  #     - DB_HOST=mysql
+  #     - DB_PORT=3306
+  #     - DB_NAME=audit_db
+  #     - DB_USERNAME=root
+  #     - DB_PASSWORD=password
+  #   depends_on:
+  #     - mysql
+
+  eureka-server:
     build:
-      context: ./services/audit-log-service
+      context: ./eureka-server
       dockerfile: Dockerfile
-    container_name: audit-log-service
+    container_name: eureka-server
     restart: always
     ports:
-      - "9003:9003"
-    environment:
-      - DB_HOST=mysql
-      - DB_PORT=3306
-      - DB_NAME=audit_db
-      - DB_USERNAME=root
-      - DB_PASSWORD=password
+      - "8761:8761"
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    restart: always
+    ports:
+      - "8080:8080"
     depends_on:
-      - mysql
+      - eureka-server
