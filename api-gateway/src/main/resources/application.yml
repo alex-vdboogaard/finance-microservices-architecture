@@ -11,7 +11,19 @@ spring:
           enabled: true # allow automatic mapping from Eureka
           lower-case-service-id: true
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
+  endpoint:
+    gateway:
+      enabled: true
+
 eureka:
   client:
+    registry-fetch-interval-seconds: 5
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://eureka-server:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true

@@ -11,6 +11,8 @@ services:
     command: sh -c "npm install && npm run dev"
     environment:
       - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - api-gateway
 
   mysql:
     image: mysql:8
@@ -20,24 +22,24 @@ services:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: audit_db
     ports:
-      - "3307:3306"
+      - "3307:3306" # host 3307 → container 3306
 
-  # audit-log-service:
-  #   build:
-  #     context: ./services/audit-log-service
-  #     dockerfile: Dockerfile
-  #   container_name: audit-log-service
-  #   restart: always
-  #   ports:
-  #     - "9003:9003"
-  #   environment:
-  #     - DB_HOST=mysql
-  #     - DB_PORT=3306
-  #     - DB_NAME=audit_db
-  #     - DB_USERNAME=root
-  #     - DB_PASSWORD=password
-  #   depends_on:
-  #     - mysql
+  audit-log-service:
+    build:
+      context: ./services/audit-log-service
+      dockerfile: Dockerfile
+    container_name: audit-log-service
+    restart: always
+    ports:
+      - "8001:8001"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/audit_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: password
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+    depends_on:
+      - mysql
+      - eureka-server
 
   eureka-server:
     build:
@@ -56,5 +58,7 @@ services:
     restart: always
     ports:
       - "8080:8080"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
     depends_on:
       - eureka-server

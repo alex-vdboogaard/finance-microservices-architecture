@@ -16,7 +16,7 @@ import com.finance.audit_log_service.service.AuditLogService;
 
 
 @RestController
-@RequestMapping("/audit-log")
+@RequestMapping("/logs")
 public class AuditLogController {
     @Autowired
     private AuditLogService auditLogService;
