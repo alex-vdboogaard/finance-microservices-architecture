@@ -12,10 +12,10 @@ FROM eclipse-temurin:17-jdk
 WORKDIR /app
 
 # Copy jar from build stage
-COPY --from=build /app/target/audit-log-service-0.0.1-SNAPSHOT.jar audit-log-service.jar
+COPY --from=build /app/target/transaction_service-0.0.1-SNAPSHOT.jar transaction_service.jar
 
 # Expose port
-EXPOSE 8001
+EXPOSE 8002
 
 # Run the app
-ENTRYPOINT ["java","-jar","audit-log-service.jar"]
+ENTRYPOINT ["java","-jar","transaction_service.jar"]
