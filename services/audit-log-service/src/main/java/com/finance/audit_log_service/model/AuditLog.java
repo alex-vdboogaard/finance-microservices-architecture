@@ -1,6 +1,7 @@
 package com.finance.audit_log_service.model;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,7 +22,7 @@ import lombok.NoArgsConstructor;
 public class AuditLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
 
     private String action;
     
