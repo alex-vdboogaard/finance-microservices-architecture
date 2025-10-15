@@ -5,7 +5,7 @@ spring:
   application:
     name: audit-log-service
   datasource:
-    url: jdbc:mysql://mysql:3306/audit_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/audit_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: root
     password: password
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -26,7 +26,7 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://eureka-server:8761/eureka/
+      defaultZone: http://localhost:8761/eureka/   # <-- points to the Eureka container
     register-with-eureka: true
     fetch-registry: true
   instance:
