@@ -1,6 +1,7 @@
 package com.finance.audit_log_service.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,6 @@ public class AuditLogService {
     }
 
     public List<AuditLog> findByAction(String action) {
-        return auditLogRepository.findByAction(action);
+        return auditLogRepository.findAll().stream().filter(log -> log.getAction().toLowerCase().contains(action.toLowerCase())).collect(Collectors.toList());
     }
 }
