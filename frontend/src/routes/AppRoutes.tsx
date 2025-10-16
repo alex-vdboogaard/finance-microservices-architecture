@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
+import React from "react"
 
 import { AppLayout } from '../layouts/AppLayout';
 import { AuditLogPage } from '../pages/AuditLogPage';

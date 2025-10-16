@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import React from "react"
 import { useSearchParams } from 'react-router-dom';
 
 import type { AuditLogFilters as AuditLogFiltersType } from '../types/audit-log';

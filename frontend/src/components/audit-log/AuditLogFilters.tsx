@@ -1,4 +1,4 @@
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { Filter, RefreshCw, Search, X } from 'lucide-react';
 
 import { Button } from '../ui/button';
@@ -14,12 +14,23 @@ interface AuditLogFiltersProps {
   onRefresh?: () => void;
 }
 
+const hasFiltersApplied = (filters: AuditLogFilters) =>
+  Boolean(
+    filters.search ||
+      filters.service ||
+      filters.user ||
+      filters.dateRange?.from ||
+      filters.dateRange?.to
+  );
+
 export function AuditLogFilters({
   filters,
   onFiltersChange,
   isLoading = false,
   onRefresh
 }: AuditLogFiltersProps) {
+  const [showFilters, setShowFilters] = useState(() => hasFiltersApplied(filters));
+
   const updateFilters = (partial: Partial<AuditLogFilters>) => {
     onFiltersChange({ ...filters, ...partial });
   };
@@ -57,102 +68,50 @@ export function AuditLogFilters({
     onFiltersChange({});
   };
 
-  const hasActiveFilters = Boolean(
-    filters.search ||
-      filters.service ||
-      filters.user ||
-      filters.dateRange?.from ||
-      filters.dateRange?.to
-  );
+  const filtersActive = hasFiltersApplied(filters);
 
   const formatDate = (date?: Date) => (date ? date.toISOString().split('T')[0] : '');
 
   return (
-    <Card className="border-0 bg-accent/20 p-4">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <div className="flex-1 space-y-3">
-          <Label htmlFor="search" className="text-sm font-medium">
-            Search by action
-          </Label>
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              id="search"
-              placeholder="Filter by action keyword..."
-              className="pl-9"
-              value={filters.search ?? ''}
-              onChange={(event) =>
-                updateFilters({
-                  search: event.target.value ? event.target.value : undefined
-                })
-              }
-            />
-          </div>
-        </div>
-
-        <div className="grid w-full flex-1 grid-cols-1 gap-4 sm:grid-cols-2 lg:max-w-xl">
-          <div className="space-y-2">
-            <Label htmlFor="from" className="text-sm font-medium">
-              From date
-            </Label>
-            <Input
-              id="from"
-              name="from"
-              type="date"
-              value={formatDate(filters.dateRange?.from)}
-              onChange={handleDateChange}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="to" className="text-sm font-medium">
-              To date
-            </Label>
-            <Input
-              id="to"
-              name="to"
-              type="date"
-              value={formatDate(filters.dateRange?.to)}
-              onChange={handleDateChange}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="service" className="text-sm font-medium">
-              Service (optional)
-            </Label>
-            <Input
-              id="service"
-              placeholder="payments-service"
-              value={filters.service ?? ''}
-              onChange={(event) =>
-                updateFilters({
-                  service: event.target.value ? event.target.value : undefined
-                })
-              }
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="user" className="text-sm font-medium">
-              User (optional)
-            </Label>
-            <Input
-              id="user"
-              placeholder="user@example.com"
-              value={filters.user ?? ''}
-              onChange={(event) =>
-                updateFilters({ user: event.target.value ? event.target.value : undefined })
-              }
-            />
-          </div>
+    <div className="space-y-4">
+      <div className="space-y-3">
+        <Label htmlFor="search" className="text-sm font-medium">
+          Search by action
+        </Label>
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
+          <Input
+            id="search"
+            placeholder="Filter by action keyword..."
+            className="pl-10 bg-input-background border-0 rounded-lg"
+            value={filters.search ?? ''}
+            onChange={(event) =>
+              updateFilters({
+                search: event.target.value ? event.target.value : undefined
+              })
+            }
+          />
         </div>
       </div>
 
-      <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Filter className="h-4 w-4" />
-          {hasActiveFilters ? 'Filters active' : 'No filters applied'}
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="gap-2"
+            onClick={() => setShowFilters((previous) => !previous)}
+            aria-expanded={showFilters}
+          >
+            <Filter className="h-4 w-4" />
+            Filters
+            {filtersActive && <span className="h-2 w-2 rounded-full bg-primary" />}
+          </Button>
+
+          <span className="text-sm text-muted-foreground">
+            {filtersActive ? 'Filters active' : 'No filters applied'}
+          </span>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
@@ -162,7 +121,7 @@ export function AuditLogFilters({
             size="sm"
             className="gap-2"
             onClick={clearFilters}
-            disabled={!hasActiveFilters}
+            disabled={!filtersActive}
           >
             <X className="h-4 w-4" />
             Clear
@@ -181,6 +140,68 @@ export function AuditLogFilters({
           </Button>
         </div>
       </div>
-    </Card>
+
+      {showFilters && (
+        <Card className="space-y-6 border-0 bg-accent/20 p-4">
+          <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:max-w-5xl">
+            <div className="space-y-2">
+              <Label htmlFor="from" className="text-sm font-medium">
+                From date
+              </Label>
+              <Input
+                id="from"
+                name="from"
+                type="date"
+                value={formatDate(filters.dateRange?.from)}
+                onChange={handleDateChange}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="to" className="text-sm font-medium">
+                To date
+              </Label>
+              <Input
+                id="to"
+                name="to"
+                type="date"
+                value={formatDate(filters.dateRange?.to)}
+                onChange={handleDateChange}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="service" className="text-sm font-medium">
+                Service (optional)
+              </Label>
+              <Input
+                id="service"
+                placeholder="payments-service"
+                value={filters.service ?? ''}
+                onChange={(event) =>
+                  updateFilters({
+                    service: event.target.value ? event.target.value : undefined
+                  })
+                }
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="user" className="text-sm font-medium">
+                User (optional)
+              </Label>
+              <Input
+                id="user"
+                placeholder="user@example.com"
+                value={filters.user ?? ''}
+                onChange={(event) =>
+                  updateFilters({ user: event.target.value ? event.target.value : undefined })
+                }
+              />
+            </div>
+          </div>
+        </Card>
+      )}
+    </div>
   );
 }

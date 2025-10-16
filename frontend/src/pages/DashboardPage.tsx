@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import React from "react"
 
 import { TransactionFilters } from '../components/TransactionFilters';
 import { TransactionTable } from '../components/TransactionTable';
