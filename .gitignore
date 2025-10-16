@@ -13,6 +13,7 @@ pom.xml.releaseBackup
 pom.xml.versionsBackup
 
 *.md
+!prompt.md
 
 # Spring Boot logs and PID files
 *.log
