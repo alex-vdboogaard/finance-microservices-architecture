@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import type { AuditLog, AuditLogFilters } from '../types/audit-log';
 
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = 'http://localhost:8080/audit-log-service';
 
 interface UseAuditLogsResult {
   logs: AuditLog[];

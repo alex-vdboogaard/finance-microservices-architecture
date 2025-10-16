@@ -7,12 +7,21 @@ spring:
   cloud:
     gateway:
       globalcors:
-        corsConfigurations:
+        add-to-simple-url-handler-mapping: true
+        cors-configurations:
           '[/**]':
             allowedOrigins:
-              - http://localhost:5173
-            allowedHeaders: "*"
-            allowedMethods: "*"
+              - "http://localhost:5173"
+              - "http://api-gateway:8080"
+              - "http://frontend:5173"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders:
+              - "*"
             allowCredentials: true
       discovery:
         locator:
