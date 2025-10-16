@@ -6,6 +6,14 @@ spring:
     name: api-gateway
   cloud:
     gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - http://localhost:5173
+            allowedHeaders: "*"
+            allowedMethods: "*"
+            allowCredentials: true
       discovery:
         locator:
           enabled: true # allow automatic mapping from Eureka
