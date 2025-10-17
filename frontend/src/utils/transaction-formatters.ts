@@ -34,3 +34,7 @@ export function getTransactionStatusColor(status: Transaction['status']) {
   }
 }
 
+export function getTransactionDirection(transaction: Pick<Transaction, 'amount'>) {
+  return transaction.amount >= 0 ? 'income' : 'expense';
+}
+

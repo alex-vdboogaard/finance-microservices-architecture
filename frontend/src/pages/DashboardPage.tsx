@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react';
-import React from "react"
 
 import { TransactionFilters } from '../components/TransactionFilters';
 import { TransactionTable } from '../components/TransactionTable';
 import { mockTransactions } from '../data/mockTransactions';
 import { TransactionFilters as Filters } from '../types/transaction';
+import { getTransactionDirection } from '../utils/transaction-formatters';
 
 export function DashboardPage() {
   const [filters, setFilters] = useState<Filters>({
@@ -57,7 +57,11 @@ export function DashboardPage() {
         }
       }
 
-      if (filters.type && filters.type !== 'all' && transaction.type !== filters.type) {
+      if (
+        filters.type &&
+        filters.type !== 'all' &&
+        getTransactionDirection(transaction) !== filters.type
+      ) {
         return false;
       }
 

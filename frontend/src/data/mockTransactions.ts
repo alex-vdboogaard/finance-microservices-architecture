@@ -6,14 +6,10 @@ export const mockTransactions: Transaction[] = [
     globalId: 'TXN-2025-001-SAL-5000',
     date: '2025-01-15',
     description: 'Salary Payment',
-    category: 'Salary',
     amount: 5000,
-    type: 'income',
     status: 'completed',
     paymentMethod: 'Direct Deposit',
-    tags: ['monthly', 'recurring'],
     reference: 'REF-2025-001',
-    accountName: 'Primary Checking',
     user: { id: 'USR-1001', fullName: 'Alex Johnson' }
   },
   {
@@ -21,14 +17,10 @@ export const mockTransactions: Transaction[] = [
     globalId: 'TXN-2025-002-GRC-127',
     date: '2025-01-14',
     description: 'Grocery Shopping',
-    category: 'Food & Dining',
     amount: -127.50,
-    type: 'expense',
     status: 'completed',
     paymentMethod: 'Credit Card',
-    tags: ['essential'],
     reference: 'REF-2025-002',
-    accountName: 'Rewards Credit Card',
     user: { id: 'USR-1001', fullName: 'Alex Johnson' }
   },
   {
@@ -36,14 +28,10 @@ export const mockTransactions: Transaction[] = [
     globalId: 'TXN-2025-003-FRL-800',
     date: '2025-01-13',
     description: 'Freelance Project',
-    category: 'Freelance',
     amount: 800,
-    type: 'income',
     status: 'completed',
     paymentMethod: 'Bank Transfer',
-    tags: ['project', 'web-dev'],
     reference: 'REF-2025-003',
-    accountName: 'Business Checking',
     user: { id: 'USR-1002', fullName: 'Taylor Smith' }
   },
   {
@@ -51,14 +39,10 @@ export const mockTransactions: Transaction[] = [
     globalId: 'TXN-2025-004-UTL-089',
     date: '2025-01-12',
     description: 'Electric Bill',
-    category: 'Utilities',
     amount: -89.99,
-    type: 'expense',
     status: 'completed',
     paymentMethod: 'Auto Pay',
-    tags: ['bills', 'recurring'],
     reference: 'REF-2025-004',
-    accountName: 'Primary Checking',
     user: { id: 'USR-1001', fullName: 'Alex Johnson' }
   },
   {
@@ -66,14 +50,10 @@ export const mockTransactions: Transaction[] = [
     globalId: 'TXN-2025-005-COF-004',
     date: '2025-01-11',
     description: 'Coffee Shop',
-    category: 'Food & Dining',
     amount: -4.75,
-    type: 'expense',
     status: 'completed',
     paymentMethod: 'Debit Card',
-    tags: ['coffee'],
     reference: 'REF-2025-005',
-    accountName: 'Everyday Spending',
     user: { id: 'USR-1001', fullName: 'Alex Johnson' }
   },
   {
@@ -81,14 +61,10 @@ export const mockTransactions: Transaction[] = [
     globalId: 'TXN-2025-006-INV-150',
     date: '2025-01-10',
     description: 'Investment Dividend',
-    category: 'Investments',
     amount: 150.25,
-    type: 'income',
     status: 'completed',
     paymentMethod: 'Brokerage',
-    tags: ['dividend', 'passive'],
     reference: 'REF-2025-006',
-    accountName: 'Brokerage Account',
     user: { id: 'USR-1002', fullName: 'Taylor Smith' }
   },
   {
@@ -96,14 +72,10 @@ export const mockTransactions: Transaction[] = [
     globalId: 'TXN-2025-007-RNT-1200',
     date: '2025-01-09',
     description: 'Rent Payment',
-    category: 'Housing',
     amount: -1200,
-    type: 'expense',
     status: 'completed',
     paymentMethod: 'Bank Transfer',
-    tags: ['rent', 'recurring', 'essential'],
     reference: 'REF-2025-007',
-    accountName: 'Primary Checking',
     user: { id: 'USR-1001', fullName: 'Alex Johnson' }
   },
   {
@@ -111,14 +83,10 @@ export const mockTransactions: Transaction[] = [
     globalId: 'TXN-2025-008-EDU-099',
     date: '2025-01-08',
     description: 'Online Course',
-    category: 'Education',
     amount: -99.99,
-    type: 'expense',
     status: 'completed',
     paymentMethod: 'Credit Card',
-    tags: ['learning', 'development'],
     reference: 'REF-2025-008',
-    accountName: 'Rewards Credit Card',
     user: { id: 'USR-1002', fullName: 'Taylor Smith' }
   },
   {
@@ -126,14 +94,10 @@ export const mockTransactions: Transaction[] = [
     globalId: 'TXN-2025-009-UBR-018',
     date: '2025-01-07',
     description: 'Uber Ride',
-    category: 'Transportation',
     amount: -18.50,
-    type: 'expense',
     status: 'completed',
     paymentMethod: 'Credit Card',
-    tags: ['transportation'],
     reference: 'REF-2025-009',
-    accountName: 'Everyday Spending',
     user: { id: 'USR-1001', fullName: 'Alex Johnson' }
   },
   {
@@ -141,14 +105,10 @@ export const mockTransactions: Transaction[] = [
     globalId: 'TXN-2025-010-CSH-025',
     date: '2025-01-06',
     description: 'Cashback Reward',
-    category: 'Rewards',
     amount: 25.00,
-    type: 'income',
     status: 'completed',
     paymentMethod: 'Credit Card',
-    tags: ['cashback', 'rewards'],
     reference: 'REF-2025-010',
-    accountName: 'Rewards Credit Card',
     user: { id: 'USR-1001', fullName: 'Alex Johnson' }
   },
   {
@@ -156,14 +116,10 @@ export const mockTransactions: Transaction[] = [
     globalId: 'TXN-2025-011-NTF-015',
     date: '2025-01-05',
     description: 'Netflix Subscription',
-    category: 'Entertainment',
     amount: -15.99,
-    type: 'expense',
     status: 'completed',
     paymentMethod: 'Auto Pay',
-    tags: ['subscription', 'recurring'],
     reference: 'REF-2025-011',
-    accountName: 'Everyday Spending',
     user: { id: 'USR-1002', fullName: 'Taylor Smith' }
   },
   {
@@ -171,14 +127,10 @@ export const mockTransactions: Transaction[] = [
     globalId: 'TXN-2025-012-GAS-045',
     date: '2025-01-04',
     description: 'Gas Station',
-    category: 'Transportation',
     amount: -45.20,
-    type: 'expense',
     status: 'completed',
     paymentMethod: 'Credit Card',
-    tags: ['fuel', 'transportation'],
     reference: 'REF-2025-012',
-    accountName: 'Everyday Spending',
     user: { id: 'USR-1001', fullName: 'Alex Johnson' }
   },
   {
@@ -186,14 +138,10 @@ export const mockTransactions: Transaction[] = [
     globalId: 'TXN-2025-013-TRF-500',
     date: '2025-01-03',
     description: 'Pending Transfer',
-    category: 'Transfer',
     amount: 500,
-    type: 'income',
     status: 'pending',
     paymentMethod: 'Wire Transfer',
-    tags: ['transfer'],
     reference: 'REF-2025-013',
-    accountName: 'Primary Checking',
     user: { id: 'USR-1002', fullName: 'Taylor Smith' }
   },
   {
@@ -201,14 +149,10 @@ export const mockTransactions: Transaction[] = [
     globalId: 'TXN-2025-014-GYM-039',
     date: '2025-01-02',
     description: 'Gym Membership',
-    category: 'Health & Fitness',
     amount: -39.99,
-    type: 'expense',
     status: 'completed',
     paymentMethod: 'Auto Pay',
-    tags: ['health', 'recurring'],
     reference: 'REF-2025-014',
-    accountName: 'Everyday Spending',
     user: { id: 'USR-1001', fullName: 'Alex Johnson' }
   },
   {
@@ -216,14 +160,10 @@ export const mockTransactions: Transaction[] = [
     globalId: 'TXN-2025-015-DIN-085',
     date: '2025-01-01',
     description: 'New Year Dinner',
-    category: 'Food & Dining',
     amount: -85.30,
-    type: 'expense',
     status: 'completed',
     paymentMethod: 'Credit Card',
-    tags: ['celebration', 'dining'],
     reference: 'REF-2025-015',
-    accountName: 'Rewards Credit Card',
     user: { id: 'USR-1002', fullName: 'Taylor Smith' }
   }
 ];

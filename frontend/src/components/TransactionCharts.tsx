@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { Transaction } from '../types/transaction';
+import { getTransactionDirection } from '../utils/transaction-formatters';
 
 interface TransactionChartsProps {
   transactions: Transaction[];
@@ -9,19 +10,21 @@ interface TransactionChartsProps {
 
 export function TransactionCharts({ transactions }: TransactionChartsProps) {
   const chartData = useMemo(() => {
-    // Category breakdown for pie chart
-    const categoryData = transactions
-      .filter(t => t.type === 'expense' && t.status === 'completed')
+    // Payment method breakdown for expense pie chart
+    const paymentMethodTotals = transactions
+      .filter((transaction) => transaction.amount < 0 && transaction.status === 'completed')
       .reduce((acc, transaction) => {
-        const category = transaction.category;
-        acc[category] = (acc[category] || 0) + Math.abs(transaction.amount);
+        const paymentMethod = transaction.paymentMethod || 'Unknown';
+        acc[paymentMethod] = (acc[paymentMethod] || 0) + Math.abs(transaction.amount);
         return acc;
       }, {} as Record<string, number>);
 
-    const pieData = Object.entries(categoryData).map(([name, value]) => ({
+    const totalExpenses = Object.values(paymentMethodTotals).reduce((a, b) => a + b, 0);
+
+    const pieData = Object.entries(paymentMethodTotals).map(([name, value]) => ({
       name,
       value,
-      percentage: ((value / Object.values(categoryData).reduce((a, b) => a + b, 0)) * 100).toFixed(1)
+      percentage: totalExpenses === 0 ? '0.0' : ((value / totalExpenses) * 100).toFixed(1)
     }));
 
     // Monthly income vs expenses for bar chart
@@ -30,12 +33,12 @@ export function TransactionCharts({ transactions }: TransactionChartsProps) {
       .reduce((acc, transaction) => {
         const date = new Date(transaction.date);
         const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-        
+
         if (!acc[monthKey]) {
           acc[monthKey] = { month: monthKey, income: 0, expenses: 0 };
         }
-        
-        if (transaction.type === 'income') {
+
+        if (getTransactionDirection(transaction) === 'income') {
           acc[monthKey].income += transaction.amount;
         } else {
           acc[monthKey].expenses += Math.abs(transaction.amount);
@@ -101,7 +104,7 @@ export function TransactionCharts({ transactions }: TransactionChartsProps) {
       {/* Expenses by Category - Pie Chart */}
       <Card className="border-0 bg-card">
         <CardHeader>
-          <CardTitle>Expenses by Category</CardTitle>
+          <CardTitle>Expenses by Payment Method</CardTitle>
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={300}>

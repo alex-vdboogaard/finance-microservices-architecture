@@ -6,6 +6,7 @@ import { Separator } from './ui/separator';
 import {
   formatTransactionAmount,
   formatTransactionTimestamp,
+  getTransactionDirection,
   getTransactionStatusColor
 } from '../utils/transaction-formatters';
 
@@ -68,9 +69,10 @@ export function TransactionDetailsDialog({
               <DetailItem label="Transaction ID" value={transaction.globalId} />
               <DetailItem label="Reference" value={transaction.reference} />
               <DetailItem label="Description" value={transaction.description} />
-              <DetailItem label="Category" value={transaction.category} />
-              <DetailItem label="Type" value={transaction.type === 'income' ? 'Income' : 'Expense'} />
-              <DetailItem label="Account" value={transaction.accountName} />
+              <DetailItem
+                label="Direction"
+                value={getTransactionDirection(transaction) === 'income' ? 'Incoming' : 'Outgoing'}
+              />
               <DetailItem label="Payment Method" value={transaction.paymentMethod} />
               <DetailItem
                 label="Initiated By"
@@ -81,21 +83,6 @@ export function TransactionDetailsDialog({
                   </span>
                 }
               />
-            </div>
-
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">Tags</p>
-              <div className="flex flex-wrap gap-2">
-                {transaction.tags.length > 0 ? (
-                  transaction.tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="border-0 capitalize">
-                      {tag}
-                    </Badge>
-                  ))
-                ) : (
-                  <span className="text-sm text-muted-foreground">No tags assigned</span>
-                )}
-              </div>
             </div>
           </div>
         </DialogContent>
