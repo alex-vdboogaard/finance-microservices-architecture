@@ -29,4 +29,12 @@ public class Transaction {
 
     @Builder.Default
     private LocalDateTime timestamp = LocalDateTime.now();
+
+    public Double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
 }
