@@ -1,3 +1,8 @@
+export interface TransactionUser {
+  id: string;
+  fullName: string;
+}
+
 export interface Transaction {
   id: string;
   globalId: string; // Global unique identifier
@@ -9,6 +14,9 @@ export interface Transaction {
   status: 'completed' | 'pending' | 'failed';
   paymentMethod: string;
   tags: string[];
+  reference: string;
+  accountName: string;
+  user: TransactionUser;
 }
 
 export interface TransactionFilters {

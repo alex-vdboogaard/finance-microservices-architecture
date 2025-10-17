@@ -1,16 +1,18 @@
 import { useState } from 'react';
+import type { ReactNode } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
-import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from './ui/pagination';
-import { ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { ArrowUpDown, ArrowUp, ArrowDown, Expand } from 'lucide-react';
 import { Transaction } from '../types/transaction';
+import { TransactionDetailsDialog } from './TransactionDetailsDialog';
+import { formatTransactionAmount, formatTransactionTimestamp } from '../utils/transaction-formatters';
 
 interface TransactionTableProps {
   transactions: Transaction[];
 }
 
-type SortField = 'globalId' | 'date' | 'paymentMethod' | 'status' | 'amount';
+type SortField = 'globalId' | 'date' | 'amount';
 type SortDirection = 'asc' | 'desc';
 
 const ITEMS_PER_PAGE = 10;
@@ -19,6 +21,15 @@ export function TransactionTable({ transactions }: TransactionTableProps) {
   const [sortField, setSortField] = useState<SortField>('date');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleDialogOpenChange = (open: boolean) => {
+    setIsDialogOpen(open);
+    if (!open) {
+      setSelectedTransaction(null);
+    }
+  };
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -55,41 +66,7 @@ export function TransactionTable({ transactions }: TransactionTableProps) {
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const paginatedTransactions = sortedTransactions.slice(startIndex, endIndex);
 
-  const formatAmount = (amount: number) => {
-    const isPositive = amount >= 0;
-    const formatted = new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(Math.abs(amount));
-    
-    return { formatted, isPositive };
-  };
-
-  const formatTimestamp = (dateString: string) => {
-    return new Date(dateString).toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    });
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
-      case 'failed':
-        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
-      default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
-    }
-  };
-
-  const SortButton = ({ field, children }: { field: SortField; children: React.ReactNode }) => (
+  const SortButton = ({ field, children }: { field: SortField; children: ReactNode }) => (
     <Button
       variant="ghost"
       size="sm"
@@ -129,42 +106,44 @@ export function TransactionTable({ transactions }: TransactionTableProps) {
                 <SortButton field="globalId">ID</SortButton>
               </TableHead>
               <TableHead className="font-medium">
-                <SortButton field="date">Timestamp</SortButton>
-              </TableHead>
-              <TableHead className="font-medium">
-                <SortButton field="paymentMethod">Payment Method</SortButton>
-              </TableHead>
-              <TableHead className="font-medium">
-                <SortButton field="status">Status</SortButton>
+                <SortButton field="date">Date</SortButton>
               </TableHead>
               <TableHead className="text-right font-medium">
                 <SortButton field="amount">Amount</SortButton>
+              </TableHead>
+              <TableHead className="w-0 text-right font-medium">
+                <span className="sr-only">Actions</span>
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {paginatedTransactions.map((transaction) => {
-              const { formatted, isPositive } = formatAmount(transaction.amount);
+              const { formatted, isPositive } = formatTransactionAmount(transaction.amount);
               return (
                 <TableRow key={transaction.id} className="hover:bg-accent/20 border-0">
                   <TableCell className="font-mono text-sm">
                     {transaction.globalId}
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {formatTimestamp(transaction.date)}
-                  </TableCell>
-                  <TableCell>
-                    {transaction.paymentMethod}
-                  </TableCell>
-                  <TableCell>
-                    <Badge className={`capitalize border-0 ${getStatusColor(transaction.status)}`}>
-                      {transaction.status}
-                    </Badge>
+                    {formatTransactionTimestamp(transaction.date)}
                   </TableCell>
                   <TableCell className="text-right font-medium">
                     <span className={isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}>
                       {isPositive ? '+' : '-'}{formatted}
                     </span>
+                  </TableCell>
+                  <TableCell className="w-0 text-right">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label="View transaction details"
+                      onClick={() => {
+                        setSelectedTransaction(transaction);
+                        setIsDialogOpen(true);
+                      }}
+                    >
+                      <Expand className="h-4 w-4" />
+                    </Button>
                   </TableCell>
                 </TableRow>
               );
@@ -230,6 +209,12 @@ export function TransactionTable({ transactions }: TransactionTableProps) {
           </Pagination>
         </div>
       )}
+
+      <TransactionDetailsDialog
+        open={isDialogOpen}
+        transaction={selectedTransaction}
+        onOpenChange={handleDialogOpenChange}
+      />
     </div>
   );
 }

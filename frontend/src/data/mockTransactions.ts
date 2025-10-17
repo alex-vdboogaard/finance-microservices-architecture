@@ -11,7 +11,10 @@ export const mockTransactions: Transaction[] = [
     type: 'income',
     status: 'completed',
     paymentMethod: 'Direct Deposit',
-    tags: ['monthly', 'recurring']
+    tags: ['monthly', 'recurring'],
+    reference: 'REF-2025-001',
+    accountName: 'Primary Checking',
+    user: { id: 'USR-1001', fullName: 'Alex Johnson' }
   },
   {
     id: '2',
@@ -23,7 +26,10 @@ export const mockTransactions: Transaction[] = [
     type: 'expense',
     status: 'completed',
     paymentMethod: 'Credit Card',
-    tags: ['essential']
+    tags: ['essential'],
+    reference: 'REF-2025-002',
+    accountName: 'Rewards Credit Card',
+    user: { id: 'USR-1001', fullName: 'Alex Johnson' }
   },
   {
     id: '3',
@@ -35,7 +41,10 @@ export const mockTransactions: Transaction[] = [
     type: 'income',
     status: 'completed',
     paymentMethod: 'Bank Transfer',
-    tags: ['project', 'web-dev']
+    tags: ['project', 'web-dev'],
+    reference: 'REF-2025-003',
+    accountName: 'Business Checking',
+    user: { id: 'USR-1002', fullName: 'Taylor Smith' }
   },
   {
     id: '4',
@@ -47,7 +56,10 @@ export const mockTransactions: Transaction[] = [
     type: 'expense',
     status: 'completed',
     paymentMethod: 'Auto Pay',
-    tags: ['bills', 'recurring']
+    tags: ['bills', 'recurring'],
+    reference: 'REF-2025-004',
+    accountName: 'Primary Checking',
+    user: { id: 'USR-1001', fullName: 'Alex Johnson' }
   },
   {
     id: '5',
@@ -59,7 +71,10 @@ export const mockTransactions: Transaction[] = [
     type: 'expense',
     status: 'completed',
     paymentMethod: 'Debit Card',
-    tags: ['coffee']
+    tags: ['coffee'],
+    reference: 'REF-2025-005',
+    accountName: 'Everyday Spending',
+    user: { id: 'USR-1001', fullName: 'Alex Johnson' }
   },
   {
     id: '6',
@@ -71,7 +86,10 @@ export const mockTransactions: Transaction[] = [
     type: 'income',
     status: 'completed',
     paymentMethod: 'Brokerage',
-    tags: ['dividend', 'passive']
+    tags: ['dividend', 'passive'],
+    reference: 'REF-2025-006',
+    accountName: 'Brokerage Account',
+    user: { id: 'USR-1002', fullName: 'Taylor Smith' }
   },
   {
     id: '7',
@@ -83,7 +101,10 @@ export const mockTransactions: Transaction[] = [
     type: 'expense',
     status: 'completed',
     paymentMethod: 'Bank Transfer',
-    tags: ['rent', 'recurring', 'essential']
+    tags: ['rent', 'recurring', 'essential'],
+    reference: 'REF-2025-007',
+    accountName: 'Primary Checking',
+    user: { id: 'USR-1001', fullName: 'Alex Johnson' }
   },
   {
     id: '8',
@@ -95,7 +116,10 @@ export const mockTransactions: Transaction[] = [
     type: 'expense',
     status: 'completed',
     paymentMethod: 'Credit Card',
-    tags: ['learning', 'development']
+    tags: ['learning', 'development'],
+    reference: 'REF-2025-008',
+    accountName: 'Rewards Credit Card',
+    user: { id: 'USR-1002', fullName: 'Taylor Smith' }
   },
   {
     id: '9',
@@ -107,7 +131,10 @@ export const mockTransactions: Transaction[] = [
     type: 'expense',
     status: 'completed',
     paymentMethod: 'Credit Card',
-    tags: ['transportation']
+    tags: ['transportation'],
+    reference: 'REF-2025-009',
+    accountName: 'Everyday Spending',
+    user: { id: 'USR-1001', fullName: 'Alex Johnson' }
   },
   {
     id: '10',
@@ -119,7 +146,10 @@ export const mockTransactions: Transaction[] = [
     type: 'income',
     status: 'completed',
     paymentMethod: 'Credit Card',
-    tags: ['cashback', 'rewards']
+    tags: ['cashback', 'rewards'],
+    reference: 'REF-2025-010',
+    accountName: 'Rewards Credit Card',
+    user: { id: 'USR-1001', fullName: 'Alex Johnson' }
   },
   {
     id: '11',
@@ -131,7 +161,10 @@ export const mockTransactions: Transaction[] = [
     type: 'expense',
     status: 'completed',
     paymentMethod: 'Auto Pay',
-    tags: ['subscription', 'recurring']
+    tags: ['subscription', 'recurring'],
+    reference: 'REF-2025-011',
+    accountName: 'Everyday Spending',
+    user: { id: 'USR-1002', fullName: 'Taylor Smith' }
   },
   {
     id: '12',
@@ -143,7 +176,10 @@ export const mockTransactions: Transaction[] = [
     type: 'expense',
     status: 'completed',
     paymentMethod: 'Credit Card',
-    tags: ['fuel', 'transportation']
+    tags: ['fuel', 'transportation'],
+    reference: 'REF-2025-012',
+    accountName: 'Everyday Spending',
+    user: { id: 'USR-1001', fullName: 'Alex Johnson' }
   },
   {
     id: '13',
@@ -155,7 +191,10 @@ export const mockTransactions: Transaction[] = [
     type: 'income',
     status: 'pending',
     paymentMethod: 'Wire Transfer',
-    tags: ['transfer']
+    tags: ['transfer'],
+    reference: 'REF-2025-013',
+    accountName: 'Primary Checking',
+    user: { id: 'USR-1002', fullName: 'Taylor Smith' }
   },
   {
     id: '14',
@@ -167,7 +206,10 @@ export const mockTransactions: Transaction[] = [
     type: 'expense',
     status: 'completed',
     paymentMethod: 'Auto Pay',
-    tags: ['health', 'recurring']
+    tags: ['health', 'recurring'],
+    reference: 'REF-2025-014',
+    accountName: 'Everyday Spending',
+    user: { id: 'USR-1001', fullName: 'Alex Johnson' }
   },
   {
     id: '15',
@@ -179,6 +221,9 @@ export const mockTransactions: Transaction[] = [
     type: 'expense',
     status: 'completed',
     paymentMethod: 'Credit Card',
-    tags: ['celebration', 'dining']
+    tags: ['celebration', 'dining'],
+    reference: 'REF-2025-015',
+    accountName: 'Rewards Credit Card',
+    user: { id: 'USR-1002', fullName: 'Taylor Smith' }
   }
 ];
