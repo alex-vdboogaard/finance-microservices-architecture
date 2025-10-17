@@ -3,9 +3,14 @@ package com.finance.transactionservice.model;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,11 +35,18 @@ public class Transaction {
     @Builder.Default
     private LocalDateTime timestamp = LocalDateTime.now();
 
-    public Double getAmount() {
-        return amount;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payment_method_id", nullable = false)
+    private PaymentMethod paymentMethod;
 
-    public void setAmount(Double amount) {
-        this.amount = amount;
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private TransactionStatus status = TransactionStatus.PENDING;
+
+    public enum TransactionStatus {
+        PENDING,
+        COMPLETED,
+        FAILED,
+        CANCELLED
     }
 }
