@@ -2,7 +2,7 @@
 # Java / Spring Boot
 # ------------------------------
 # Build output
-/target/
+**/target/
 /out/
 /build/
 /logs/
