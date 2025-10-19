@@ -6,10 +6,12 @@
 package com.finance.transactionservice.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.finance.transactionservice.dto.TransactionResponse;
+import com.finance.transactionservice.mapper.TransactionMapper;
 import com.finance.transactionservice.model.Transaction;
 import com.finance.transactionservice.repository.TransactionRepository;
 
@@ -17,11 +19,17 @@ import jakarta.ws.rs.NotFoundException;
 
 @Service
 public class TransactionService {
-    @Autowired
-    public TransactionRepository transactionRepository;
+    private final TransactionRepository transactionRepository;
 
-    public List<Transaction> findAll() {
-        return transactionRepository.findAll();
+    public TransactionService(TransactionRepository transactionRepository) {
+        this.transactionRepository = transactionRepository;
+    }
+
+    public List<TransactionResponse> findAll() {
+        return transactionRepository.findAllWithPaymentMethod()
+            .stream()
+            .map(TransactionMapper::toResponse)
+            .collect(Collectors.toList());
     }
 
     public Transaction create(Transaction transaction) {

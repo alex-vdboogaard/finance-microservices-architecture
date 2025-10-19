@@ -2,26 +2,25 @@ package com.finance.transactionservice.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.finance.transactionservice.dto.TransactionResponse;
 import com.finance.transactionservice.service.TransactionService;
-
-import org.springframework.web.bind.annotation.GetMapping;
-
-import com.finance.transactionservice.model.Transaction;
-
 
 @RestController
 @RequestMapping("/transaction")
 public class TransactionController {
-    @Autowired
-    private TransactionService transactionService;
+    private final TransactionService transactionService;
+
+    public TransactionController(TransactionService transactionService) {
+        this.transactionService = transactionService;
+    }
 
     @GetMapping
-    public ResponseEntity<List<Transaction>> getAllTransactions() {
+    public ResponseEntity<List<TransactionResponse>> getAllTransactions() {
         return ResponseEntity.ok(transactionService.findAll());
     }
     
