@@ -14,9 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.finance.audit_log_service.model.AuditLog;
 import com.finance.audit_log_service.service.AuditLogService;
 import com.finance.dto.ApiResponse;
+import com.finance.logging.LoggingConfig;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.extern.slf4j.Slf4j;;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+;
 
 @Slf4j
 @RestController
@@ -50,7 +53,8 @@ public class AuditLogController {
 
 
     @PostMapping
-    public ResponseEntity<ApiResponse<AuditLog>> createAuditLog(@RequestBody AuditLog auditLog) {
+    public ResponseEntity<ApiResponse<AuditLog>> createAuditLog(@RequestBody AuditLog auditLog, HttpServletRequest request) {
+        LoggingConfig.startRequest(request.getRequestURI(), "audit-log-service");
         log.info("Received request to create audit log: action={}",
         auditLog.getAction());
         
@@ -64,6 +68,8 @@ public class AuditLogController {
                 .data(created)
                 .build();
     
+        LoggingConfig.endRequest();
+
         return ResponseEntity.ok(response);
     }
     

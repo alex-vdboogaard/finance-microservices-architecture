@@ -27,3 +27,8 @@ eureka:
     prefer-ip-address: true
 server:
   port: 8003
+logging:
+  file:
+    name: ${LOG_DIR:./logs}/transaction-service.log
+  level:
+    root: INFO

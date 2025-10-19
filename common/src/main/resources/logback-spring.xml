@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <!-- Set a service name -->
-    <property name="SERVICE_NAME" value="${spring.application.name:-audit-log-service}" />
+    <!-- Resolve service name and log directory from the Spring context -->
+    <springProperty scope="context"
+                    name="SERVICE_NAME"
+                    source="spring.application.name"
+                    defaultValue="unknown-service" />
+    <springProperty scope="context"
+                    name="LOG_DIR"
+                    source="LOG_DIR"
+                    defaultValue="logs" />
 
-    <!-- Where to save the logs -->
-    <property name="LOG_PATH" value="logs/${SERVICE_NAME}" />
+    <!-- Define log directory -->
+    <property name="LOG_PATH" value="${LOG_DIR}/${SERVICE_NAME}" />
 
-    <!-- Console appender for local development -->
+    <!-- Console appender for local debugging -->
     <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
             <providers>
@@ -22,7 +29,7 @@
         </encoder>
     </appender>
 
-    <!-- Rolling file appender for persistent logs -->
+    <!-- Rolling file appender for persistent structured logs -->
     <appender name="JSON_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_PATH}/app.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -32,8 +39,10 @@
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
             <providers>
                 <timestamp/>
+                <version/>
                 <logLevel/>
                 <loggerName/>
+                <threadName/>
                 <message/>
                 <mdc/>
                 <stackTrace/>
@@ -41,7 +50,7 @@
         </encoder>
     </appender>
 
-    <!-- Root logger -->
+    <!-- Root logger setup -->
     <root level="INFO">
         <appender-ref ref="JSON_CONSOLE" />
         <appender-ref ref="JSON_FILE" />
