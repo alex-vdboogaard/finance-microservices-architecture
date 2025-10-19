@@ -1,6 +1,7 @@
 import { Card, CardContent } from './ui/card';
 import { TrendingUp, TrendingDown, DollarSign, Activity } from 'lucide-react';
 import { Transaction } from '../types/transaction';
+import { getTransactionDirection } from '../utils/transaction-formatters';
 
 interface SummaryCardsProps {
   transactions: Transaction[];
@@ -8,11 +9,11 @@ interface SummaryCardsProps {
 
 export function SummaryCards({ transactions }: SummaryCardsProps) {
   const totalIncome = transactions
-    .filter(t => t.type === 'income' && t.status === 'completed')
+    .filter(t => getTransactionDirection(t) === 'income' && t.status === 'completed')
     .reduce((sum, t) => sum + t.amount, 0);
 
   const totalExpenses = Math.abs(transactions
-    .filter(t => t.type === 'expense' && t.status === 'completed')
+    .filter(t => getTransactionDirection(t) === 'expense' && t.status === 'completed')
     .reduce((sum, t) => sum + t.amount, 0));
 
   const netBalance = totalIncome - totalExpenses;

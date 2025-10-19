@@ -14,8 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.finance.audit_log_service.model.AuditLog;
 import com.finance.audit_log_service.service.AuditLogService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/logs")
+@Tag(name = "Audit Logs", description = "Endpoints for retrieving and creating audit logs")
 public class AuditLogController {
     @Autowired
     private AuditLogService auditLogService;
