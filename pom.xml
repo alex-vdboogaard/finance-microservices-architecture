@@ -24,6 +24,7 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Imports the Spring Boot BOM to manage dependency versions -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>

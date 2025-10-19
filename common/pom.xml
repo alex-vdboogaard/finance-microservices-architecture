@@ -23,18 +23,22 @@
     </properties>
 
     <dependencies>
-        <!-- JWT -->
+        <!-- Exposes the core JWT API for token creation and parsing -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
             <version>0.11.5</version>
         </dependency>
+
+        <!-- Provides the runtime implementation for the JWT API -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-impl</artifactId>
             <version>0.11.5</version>
             <scope>runtime</scope>
         </dependency>
+
+        <!-- Adds Jackson serialization support for JWT payloads -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId>
@@ -42,33 +46,31 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Lombok -->
+        <!-- Supplies Lombok annotations for boilerplate reduction -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
 
-
-        <!-- JSON logging (Logstash encoder) -->
+        <!-- Formats Logback logs as JSON via Logstash encoder -->
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
             <version>7.4</version>
         </dependency>
 
-        <!-- Micrometer tracing bridge (replaces Sleuth) -->
+        <!-- Bridges Micrometer tracing APIs to Brave -->
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-tracing-bridge-brave</artifactId>
         </dependency>
 
-        <!-- Optional: Zipkin reporter for distributed tracing -->
+        <!-- Publishes distributed traces to Zipkin using Brave -->
         <dependency>
             <groupId>io.zipkin.reporter2</groupId>
             <artifactId>zipkin-reporter-brave</artifactId>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -92,4 +94,3 @@
         </plugins>
     </build>
 </project>
-

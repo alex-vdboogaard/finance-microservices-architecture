@@ -32,60 +32,79 @@
 		<spring.boot.validation.mode>off</spring.boot.validation.mode>
 	</properties>
 	<dependencies>
-	<dependency>
-    	<groupId>com.mysql</groupId>
-    	<artifactId>mysql-connector-j</artifactId>
-	</dependency>
+		<!-- Supplies the MySQL JDBC driver -->
 		<dependency>
-    		<groupId>org.springdoc</groupId>
-    		<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-    		<version>2.6.0</version>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
 		</dependency>
+
+		<!-- Generates interactive OpenAPI documentation -->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.6.0</version>
+		</dependency>
+
+		<!-- Exposes actuator endpoints for monitoring -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
+
+		<!-- Provides Spring Data JPA support -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
+
+		<!-- Enables building RESTful web endpoints -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+
+		<!-- Registers the service with Eureka for discovery -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
 
-		<!-- Common module -->
-			<dependency>
-				<groupId>com.finance</groupId>
-				<artifactId>common</artifactId>
-				<version>1.0-SNAPSHOT</version>
-			</dependency>
+		<!-- Reuses shared classes from the common module -->
+		<dependency>
+			<groupId>com.finance</groupId>
+			<artifactId>common</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 
-        	<dependency>
-		<groupId>org.projectlombok</groupId>
-		<artifactId>lombok</artifactId>
-		<scope>provided</scope>
-	</dependency>
+		<!-- Adds Lombok annotations during compilation -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Brings in Spring testing utilities -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-				<dependency>
-    		<groupId>io.micrometer</groupId>
-    		<artifactId>micrometer-tracing-bridge-brave</artifactId>
-		</dependency>
+
+		<!-- Bridges Micrometer tracing APIs to Brave -->
 		<dependency>
-  		  <groupId>io.zipkin.reporter2</groupId>
- 		   <artifactId>zipkin-reporter-brave</artifactId>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-tracing-bridge-brave</artifactId>
+		</dependency>
+
+		<!-- Publishes distributed traces to Zipkin using Brave -->
+		<dependency>
+			<groupId>io.zipkin.reporter2</groupId>
+			<artifactId>zipkin-reporter-brave</artifactId>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
+			<!-- Imports the Spring Cloud BOM to align dependency versions -->
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-dependencies</artifactId>

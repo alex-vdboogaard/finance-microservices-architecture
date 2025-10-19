@@ -31,56 +31,82 @@
         <spring-cloud.version>2023.0.3</spring-cloud.version>
 	    </properties>
     <dependencies>
+        <!-- Provides Spring Data JPA support -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
+
+        <!-- Enables building RESTful web endpoints -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
+        <!-- Registers the service with Eureka for discovery -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
+
+        <!-- Adds Spring Kafka messaging support -->
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
         </dependency>
-		<dependency>
-    		<groupId>org.springdoc</groupId>
-    		<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-    		<version>2.6.0</version>
-		</dependency>
+
+        <!-- Generates interactive OpenAPI documentation -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.6.0</version>
+        </dependency>
+
+        <!-- Enables live reload during local development -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
+
+        <!-- Supplies the PostgreSQL JDBC driver -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
+
+        <!-- Brings in Spring testing utilities -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- Provides Kafka-specific test utilities -->
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka-test</artifactId>
             <scope>test</scope>
         </dependency>
-        	<dependency>
-		<groupId>org.projectlombok</groupId>
-		<artifactId>lombok</artifactId>
-		<scope>provided</scope>
-	</dependency>
-            </dependencies>
+
+        <!-- Adds Lombok annotations during compilation -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Reuses shared classes from the common module -->
+		<dependency>
+			<groupId>com.finance</groupId>
+			<artifactId>common</artifactId>
+		</dependency>
+    </dependencies>
     <dependencyManagement>
         <dependencies>
+            <!-- Imports the Spring Cloud BOM to align dependency versions -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
@@ -88,21 +114,24 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-		<dependency>
-    		<groupId>io.micrometer</groupId>
-    		<artifactId>micrometer-tracing-bridge-brave</artifactId>
-		</dependency>
-		<dependency>
-  		  <groupId>io.zipkin.reporter2</groupId>
- 		   <artifactId>zipkin-reporter-brave</artifactId>
-		</dependency>
+            <!-- Bridges Micrometer tracing APIs to Brave -->
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-tracing-bridge-brave</artifactId>
+            </dependency>
 
-		<!-- Common module -->
-			<dependency>
-				<groupId>com.finance</groupId>
-				<artifactId>common</artifactId>
-				<version>1.0-SNAPSHOT</version>
-			</dependency>
+            <!-- Publishes distributed traces to Zipkin using Brave -->
+            <dependency>
+                <groupId>io.zipkin.reporter2</groupId>
+                <artifactId>zipkin-reporter-brave</artifactId>
+            </dependency>
+
+            <!-- Reuses shared classes from the common module -->
+            <dependency>
+                <groupId>com.finance</groupId>
+                <artifactId>common</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
