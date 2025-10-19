@@ -15,8 +15,10 @@ import com.finance.audit_log_service.model.AuditLog;
 import com.finance.audit_log_service.service.AuditLogService;
 import com.finance.dto.ApiResponse;
 
-import io.swagger.v3.oas.annotations.tags.Tag;;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;;
 
+@Slf4j
 @RestController
 @RequestMapping("/logs")
 @Tag(name = "Audit Logs", description = "Endpoints for retrieving and creating audit logs")
@@ -49,8 +51,13 @@ public class AuditLogController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<AuditLog>> createAuditLog(@RequestBody AuditLog auditLog) {
+        log.info("Received request to create audit log: action={}",
+        auditLog.getAction());
+        
         AuditLog created = auditLogService.createAuditLog(auditLog);
     
+        log.info("Audit log created successfully, id={}, action={}, timestamp={}", created.getId(), created.getAction(), created.getTimestamp());
+
         ApiResponse<AuditLog> response = ApiResponse.<AuditLog>builder()
                 .success(true)
                 .message("Created audit log successfully")
