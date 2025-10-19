@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.finance.transactionservice.service.TransactionService;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.finance.transactionservice.model.Transaction;
 
