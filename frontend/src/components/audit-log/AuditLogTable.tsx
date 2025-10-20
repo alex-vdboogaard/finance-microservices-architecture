@@ -61,14 +61,14 @@ export function AuditLogTable({ logs, isLoading = false, error = null }: AuditLo
       <Table>
         <TableHeader>
           <TableRow className="bg-muted/60">
+            <TableHead className="w-[80px] uppercase tracking-wide text-muted-foreground">
+              ID
+            </TableHead>
             <TableHead className="w-[160px] uppercase tracking-wide text-muted-foreground">
               Timestamp
             </TableHead>
             <TableHead className="uppercase tracking-wide text-muted-foreground">
               Action
-            </TableHead>
-            <TableHead className="uppercase tracking-wide text-muted-foreground">
-              Identifier
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -78,9 +78,9 @@ export function AuditLogTable({ logs, isLoading = false, error = null }: AuditLo
 
             return (
               <TableRow key={`${log.id}-${log.timestamp}`} className="hover:bg-muted/40">
+                <TableCell className="font-medium text-muted-foreground">{log.id}</TableCell>
                 <TableCell className="font-medium">{timestamp}</TableCell>
                 <TableCell>{log.action}</TableCell>
-                <TableCell className="text-muted-foreground">{log.id}</TableCell>
               </TableRow>
             );
           })}

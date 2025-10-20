@@ -41,13 +41,9 @@ const deriveFiltersFromParams = (params: URLSearchParams): AuditLogFiltersType =
   const toDate = parseDateParam(params.get('to'));
 
   const search = params.get('search') || undefined;
-  const service = params.get('service') || undefined;
-  const user = params.get('user') || undefined;
 
   return {
     search,
-    service,
-    user,
     dateRange:
       fromDate || toDate
         ? {
@@ -60,12 +56,10 @@ const deriveFiltersFromParams = (params: URLSearchParams): AuditLogFiltersType =
 
 const areFiltersEqual = (left: AuditLogFiltersType, right: AuditLogFiltersType) => {
   const searchEqual = (left.search ?? '') === (right.search ?? '');
-  const serviceEqual = (left.service ?? '') === (right.service ?? '');
-  const userEqual = (left.user ?? '') === (right.user ?? '');
   const fromEqual = areDatesEqual(left.dateRange?.from, right.dateRange?.from);
   const toEqual = areDatesEqual(left.dateRange?.to, right.dateRange?.to);
 
-  return searchEqual && serviceEqual && userEqual && fromEqual && toEqual;
+  return searchEqual && fromEqual && toEqual;
 };
 
 export function AuditLogPage() {
@@ -87,14 +81,6 @@ export function AuditLogPage() {
       params.set('search', filters.search);
     }
 
-    if (filters.service) {
-      params.set('service', filters.service);
-    }
-
-    if (filters.user) {
-      params.set('user', filters.user);
-    }
-
     const fromValue = serializeDate(filters.dateRange?.from);
     const toValue = serializeDate(filters.dateRange?.to);
 
@@ -112,30 +98,13 @@ export function AuditLogPage() {
   const { logs, loading, error, refetch } = useAuditLogs(filters);
 
   const filteredLogs = useMemo(() => {
+    if (!Array.isArray(logs)) return [];
+    
     return logs.filter((log) => {
       const timestamp = new Date(log.timestamp);
 
-      if (filters.dateRange?.from && timestamp < filters.dateRange.from) {
-        return false;
-      }
-
-      if (filters.dateRange?.to && timestamp > filters.dateRange.to) {
-        return false;
-      }
-
-      if (filters.service) {
-        const service = log.service?.toLowerCase() ?? '';
-        if (!service.includes(filters.service.toLowerCase())) {
-          return false;
-        }
-      }
-
-      if (filters.user) {
-        const actor = log.user?.toLowerCase() ?? '';
-        if (!actor.includes(filters.user.toLowerCase())) {
-          return false;
-        }
-      }
+      if (filters.dateRange?.from && timestamp < filters.dateRange.from) return false;
+      if (filters.dateRange?.to && timestamp > filters.dateRange.to) return false;
 
       return true;
     });

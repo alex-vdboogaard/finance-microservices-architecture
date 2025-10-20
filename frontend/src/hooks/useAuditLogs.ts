@@ -4,6 +4,22 @@ import type { AuditLog, AuditLogFilters } from '../types/audit-log';
 
 const API_BASE_URL = 'http://localhost:8080/audit-log-service';
 
+function extractAuditLogs(payload: unknown): AuditLog[] | null {
+  if (Array.isArray(payload)) {
+    return payload as AuditLog[];
+  }
+
+  if (typeof payload === 'object' && payload !== null) {
+    const data = (payload as { data?: unknown }).data;
+
+    if (Array.isArray(data)) {
+      return data as AuditLog[];
+    }
+  }
+
+  return null;
+}
+
 interface UseAuditLogsResult {
   logs: AuditLog[];
   loading: boolean;
@@ -45,8 +61,14 @@ export function useAuditLogs(filters: AuditLogFilters): UseAuditLogsResult {
           throw new Error(`Failed to fetch audit logs (${response.status})`);
         }
 
-        const payload: AuditLog[] = await response.json();
-        setLogs(payload);
+        const payload = await response.json();
+        const resolvedLogs = extractAuditLogs(payload);
+
+        if (!resolvedLogs) {
+          throw new Error('Invalid audit log response format');
+        }
+
+        setLogs(resolvedLogs);
       } catch (fetchError) {
         if ((fetchError as Error).name === 'AbortError') {
           return;

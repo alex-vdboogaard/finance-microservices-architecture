@@ -16,11 +16,7 @@ interface AuditLogFiltersProps {
 
 const hasFiltersApplied = (filters: AuditLogFilters) =>
   Boolean(
-    filters.search ||
-      filters.service ||
-      filters.user ||
-      filters.dateRange?.from ||
-      filters.dateRange?.to
+    filters.search || filters.dateRange?.from || filters.dateRange?.to
   );
 
 export function AuditLogFilters({
@@ -170,35 +166,6 @@ export function AuditLogFilters({
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="service" className="text-sm font-medium">
-                Service (optional)
-              </Label>
-              <Input
-                id="service"
-                placeholder="payments-service"
-                value={filters.service ?? ''}
-                onChange={(event) =>
-                  updateFilters({
-                    service: event.target.value ? event.target.value : undefined
-                  })
-                }
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="user" className="text-sm font-medium">
-                User (optional)
-              </Label>
-              <Input
-                id="user"
-                placeholder="user@example.com"
-                value={filters.user ?? ''}
-                onChange={(event) =>
-                  updateFilters({ user: event.target.value ? event.target.value : undefined })
-                }
-              />
-            </div>
           </div>
         </Card>
       )}

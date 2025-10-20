@@ -9,8 +9,6 @@ export interface AuditLog {
 
 export interface AuditLogFilters {
   search?: string;
-  service?: string;
-  user?: string;
   dateRange?: {
     from?: Date;
     to?: Date;
