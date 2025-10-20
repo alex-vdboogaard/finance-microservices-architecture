@@ -28,41 +28,49 @@ import jakarta.ws.rs.NotFoundException;
 public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final PaymentMethodRepository paymentMethodRepository;
+    private final TransactionProducer producer;
 
     public TransactionService(
-        TransactionRepository transactionRepository,
-        PaymentMethodRepository paymentMethodRepository
-    ) {
+            TransactionRepository transactionRepository,
+            PaymentMethodRepository paymentMethodRepository,
+            TransactionProducer producer) {
         this.transactionRepository = transactionRepository;
         this.paymentMethodRepository = paymentMethodRepository;
+        this.producer = producer;
     }
 
     public List<TransactionResponse> findAll() {
         return transactionRepository.findAll()
-            .stream()
-            .map(TransactionMapper::toResponse)
-            .collect(Collectors.toList());
+                .stream()
+                .map(TransactionMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
     @Transactional
     public TransactionResponse create(CreateTransactionRequest request) {
         PaymentMethod paymentMethod = paymentMethodRepository.findById(request.paymentMethodId())
-            .orElseThrow(() -> new NotFoundException("Payment method not found with id " + request.paymentMethodId()));
+                .orElseThrow(
+                        () -> new NotFoundException("Payment method not found with id " + request.paymentMethodId()));
 
         Transaction transaction = Transaction.builder()
-            .amount(request.amount())
-            .UserId(request.UserId())
-            .paymentMethod(paymentMethod)
-            .status(resolveStatus(request.status()))
-            .build();
+                .amount(request.amount())
+                .UserId(request.UserId())
+                .paymentMethod(paymentMethod)
+                .status(resolveStatus(request.status()))
+                .build();
 
         Transaction savedTransaction = transactionRepository.save(transaction);
-        return TransactionMapper.toResponse(savedTransaction);
+
+        TransactionResponse response = TransactionMapper.toResponse(savedTransaction);
+
+        producer.sendTransaction(response);
+
+        return response;
     }
 
     public Transaction update(Long id, Transaction updatedTransaction) {
         Transaction existing = transactionRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException("Transaction not found with id " + id));
+                .orElseThrow(() -> new NotFoundException("Transaction not found with id " + id));
         existing.setAmount(updatedTransaction.getAmount());
         return transactionRepository.save(existing);
     }

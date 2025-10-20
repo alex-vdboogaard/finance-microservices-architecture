@@ -74,6 +74,7 @@ grafana-data/
 # ------------------------------
 /logs/kafka/
 *.kafka
+kafka-data
 
 # ------------------------------
 # Test / Coverage / Profiling

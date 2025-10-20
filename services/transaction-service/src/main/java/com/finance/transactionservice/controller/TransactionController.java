@@ -42,9 +42,8 @@ public class TransactionController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<TransactionResponse>> createTransaction(
-        @Valid @RequestBody CreateTransactionRequest transactionRequest,
-        HttpServletRequest request
-    ) {
+            @Valid @RequestBody CreateTransactionRequest transactionRequest,
+            HttpServletRequest request) {
         LoggingConfig.startRequest(request.getRequestURI(), "transaction-service");
         log.info("Received new transaction request: {}", transactionRequest);
 
@@ -52,10 +51,10 @@ public class TransactionController {
             TransactionResponse createdTransaction = transactionService.create(transactionRequest);
 
             ApiResponse<TransactionResponse> response = ApiResponse.<TransactionResponse>builder()
-                .success(true)
-                .message("Transaction created successfully")
-                .data(createdTransaction)
-                .build();
+                    .success(true)
+                    .message("Transaction created successfully")
+                    .data(createdTransaction)
+                    .build();
 
             log.info("Completed transaction request: {}", createdTransaction);
 
