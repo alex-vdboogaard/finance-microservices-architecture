@@ -8,11 +8,18 @@ package com.finance.transactionservice.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
+import com.finance.transactionservice.dto.CreateTransactionRequest;
 import com.finance.transactionservice.dto.TransactionResponse;
 import com.finance.transactionservice.mapper.TransactionMapper;
+import com.finance.transactionservice.model.PaymentMethod;
 import com.finance.transactionservice.model.Transaction;
+import com.finance.transactionservice.model.Transaction.TransactionStatus;
+import com.finance.transactionservice.repository.PaymentMethodRepository;
 import com.finance.transactionservice.repository.TransactionRepository;
 
 import jakarta.ws.rs.NotFoundException;
@@ -20,20 +27,37 @@ import jakarta.ws.rs.NotFoundException;
 @Service
 public class TransactionService {
     private final TransactionRepository transactionRepository;
+    private final PaymentMethodRepository paymentMethodRepository;
 
-    public TransactionService(TransactionRepository transactionRepository) {
+    public TransactionService(
+        TransactionRepository transactionRepository,
+        PaymentMethodRepository paymentMethodRepository
+    ) {
         this.transactionRepository = transactionRepository;
+        this.paymentMethodRepository = paymentMethodRepository;
     }
 
     public List<TransactionResponse> findAll() {
-        return transactionRepository.findAllWithPaymentMethod()
+        return transactionRepository.findAll()
             .stream()
             .map(TransactionMapper::toResponse)
             .collect(Collectors.toList());
     }
 
-    public Transaction create(Transaction transaction) {
-        return transactionRepository.save(transaction);
+    @Transactional
+    public TransactionResponse create(CreateTransactionRequest request) {
+        PaymentMethod paymentMethod = paymentMethodRepository.findById(request.paymentMethodId())
+            .orElseThrow(() -> new NotFoundException("Payment method not found with id " + request.paymentMethodId()));
+
+        Transaction transaction = Transaction.builder()
+            .amount(request.amount())
+            .UserId(request.UserId())
+            .paymentMethod(paymentMethod)
+            .status(resolveStatus(request.status()))
+            .build();
+
+        Transaction savedTransaction = transactionRepository.save(transaction);
+        return TransactionMapper.toResponse(savedTransaction);
     }
 
     public Transaction update(Long id, Transaction updatedTransaction) {
@@ -48,5 +72,17 @@ public class TransactionService {
             throw new NotFoundException("Transaction not found with id " + id);
         }
         transactionRepository.deleteById(id);
+    }
+
+    private TransactionStatus resolveStatus(String status) {
+        if (status == null || status.isBlank()) {
+            return TransactionStatus.PENDING;
+        }
+
+        try {
+            return TransactionStatus.valueOf(status.trim().toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid transaction status: " + status);
+        }
     }
 }
