@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.finance.audit_log_service.dto.AuditLogResponse;
+import com.finance.audit_log_service.dto.CreateAuditLogRequest;
 import com.finance.audit_log_service.model.AuditLog;
 import com.finance.audit_log_service.service.AuditLogService;
 import com.finance.dto.ApiResponse;
@@ -18,8 +20,8 @@ import com.finance.logging.LoggingConfig;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;;
 
 @Slf4j
 @RestController
@@ -31,11 +33,11 @@ public class AuditLogController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<AuditLog>>> getAuditLogs() {
-        ApiResponse<List<AuditLog>> response =  ApiResponse.<List<AuditLog>>builder()
-        .success(true)
-        .message("Fetched audit logs successfully")
-        .data(auditLogService.getAll())
-        .build();
+        ApiResponse<List<AuditLog>> response = ApiResponse.<List<AuditLog>>builder()
+                .success(true)
+                .message("Fetched audit logs successfully")
+                .data(auditLogService.getAll())
+                .build();
 
         return ResponseEntity.ok(response);
     }
@@ -43,34 +45,42 @@ public class AuditLogController {
     @GetMapping("/action")
     public ResponseEntity<ApiResponse<List<AuditLog>>> getAuditLogsByAction(@RequestParam String action) {
         ApiResponse<List<AuditLog>> response = ApiResponse.<List<AuditLog>>builder()
-        .success(true)
-        .message("Fetched audit logs successfully")
-        .data(auditLogService.findByAction(action))
-        .build();
+                .success(true)
+                .message("Fetched audit logs successfully")
+                .data(auditLogService.findByAction(action))
+                .build();
 
         return ResponseEntity.ok(response);
     }
-
 
     @PostMapping
-    public ResponseEntity<ApiResponse<AuditLog>> createAuditLog(@RequestBody AuditLog auditLog, HttpServletRequest request) {
-        LoggingConfig.startRequest(request.getRequestURI(), "audit-log-service");
-        log.info("Received request to create audit log: action={}",
-        auditLog.getAction());
-        
-        AuditLog created = auditLogService.createAuditLog(auditLog);
-    
-        log.info("Audit log created successfully, id={}, action={}, timestamp={}", created.getId(), created.getAction(), created.getTimestamp());
+    public ResponseEntity<ApiResponse<AuditLogResponse>> createAuditLog(
+            @Valid @RequestBody CreateAuditLogRequest request,
+            HttpServletRequest httpRequest) {
+        LoggingConfig.startRequest(httpRequest.getRequestURI(), "audit-log-service");
 
-        ApiResponse<AuditLog> response = ApiResponse.<AuditLog>builder()
-                .success(true)
-                .message("Created audit log successfully")
-                .data(created)
-                .build();
-    
-        LoggingConfig.endRequest();
+        log.info("Received request to create audit log: action={}", request.action());
 
-        return ResponseEntity.ok(response);
+        try {
+            AuditLogResponse created = auditLogService.createAuditLog(request);
+            ApiResponse<AuditLogResponse> response = ApiResponse.<AuditLogResponse>builder()
+                    .success(true)
+                    .message("Created audit log successfully")
+                    .data(created)
+                    .build();
+
+            log.info("Audit log created successfully, id={}, action={}, timestamp={}", created.id(),
+                    created.action(),
+                    created.timestamp());
+            LoggingConfig.endRequest();
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("Error saving new audit log: {}", e.getMessage());
+            LoggingConfig.endRequest();
+            return ResponseEntity.internalServerError().build();
+        }
+
     }
-    
+
 }

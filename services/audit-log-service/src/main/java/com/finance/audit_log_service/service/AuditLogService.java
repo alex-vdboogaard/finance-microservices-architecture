@@ -6,6 +6,9 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.finance.audit_log_service.dto.AuditLogResponse;
+import com.finance.audit_log_service.dto.CreateAuditLogRequest;
+import com.finance.audit_log_service.mapper.AuditLogMapper;
 import com.finance.audit_log_service.model.AuditLog;
 import com.finance.audit_log_service.repository.AuditLogRepository;
 
@@ -18,8 +21,15 @@ public class AuditLogService {
         return auditLogRepository.findAll();
     }
 
-    public AuditLog createAuditLog(AuditLog auditLog) {
-        return auditLogRepository.save(auditLog);
+    public AuditLogResponse createAuditLog(CreateAuditLogRequest auditLog) {
+        AuditLog log = new AuditLog();
+        
+        log.setAction(auditLog.action());
+
+        AuditLog saveAuditLog = auditLogRepository.save(log);
+
+        return AuditLogMapper.toResponse(saveAuditLog);
+
     }
 
     public List<AuditLog> findByAction(String action) {
