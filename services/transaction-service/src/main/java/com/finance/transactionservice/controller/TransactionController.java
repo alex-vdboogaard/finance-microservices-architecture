@@ -13,6 +13,8 @@ import com.finance.transactionservice.dto.CreateTransactionRequest;
 import com.finance.transactionservice.dto.TransactionResponse;
 import com.finance.transactionservice.service.TransactionService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -24,7 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping("/transaction")
+@Tag(name = "Transactions", description = "Endpoints for retrieving and creating transactions")
+@RequestMapping("/transactions")
 public class TransactionController {
     private final TransactionService transactionService;
 
