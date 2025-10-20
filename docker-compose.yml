@@ -43,20 +43,21 @@ services:
 
   transaction-service:
     build:
-      context: ./services/transaction-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: services/transaction-service/Dockerfile
     container_name: transaction-service
     restart: always
     ports:
       - "8003:8003"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/audit_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/transaction_db
+      SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: password
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
     depends_on:
-      - mysql
+      - postgres
       - eureka-server
       - kafka
 
@@ -123,3 +124,14 @@ services:
     depends_on:
       - kafka
       - zookeeper
+
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: transaction_db
+    ports:
+      - "5432:5432"
