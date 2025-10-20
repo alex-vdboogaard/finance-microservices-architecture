@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import com.finance.transactionservice.model.Transaction;
@@ -17,5 +18,6 @@ import com.finance.transactionservice.model.Transaction;
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
     @Override
     @EntityGraph(attributePaths = "paymentMethod")
+    @NonNull
     List<Transaction> findAll();
 }
