@@ -6,6 +6,8 @@
 package com.finance.transactionservice.repository;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,4 +22,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     @EntityGraph(attributePaths = "paymentMethod")
     @NonNull
     List<Transaction> findAll();
+
+    @EntityGraph(attributePaths = "paymentMethod")
+    @NonNull
+    Page<Transaction> findAll(@NonNull Pageable pageable);
 }

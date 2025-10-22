@@ -5,9 +5,8 @@
 
 package com.finance.transactionservice.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,11 +39,10 @@ public class TransactionService {
         this.producer = producer;
     }
 
-    public List<TransactionResponse> findAll() {
-        return transactionRepository.findAll()
-                .stream()
-                .map(TransactionMapper::toResponse)
-                .collect(Collectors.toList());
+    public Page<TransactionResponse> findAll(Pageable pageable) {
+        return transactionRepository
+                .findAll(pageable)
+                .map(TransactionMapper::toResponse);
     }
 
     @Transactional
@@ -69,20 +67,6 @@ public class TransactionService {
         TransactionResponse response = TransactionMapper.toResponse(savedTransaction);
 
         return response;
-    }
-
-    public Transaction update(Long id, Transaction updatedTransaction) {
-        Transaction existing = transactionRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Transaction not found with id " + id));
-        existing.setAmount(updatedTransaction.getAmount());
-        return transactionRepository.save(existing);
-    }
-
-    public void delete(Long id) {
-        if (!transactionRepository.existsById(id)) {
-            throw new NotFoundException("Transaction not found with id " + id);
-        }
-        transactionRepository.deleteById(id);
     }
 
     private TransactionStatus resolveStatus(String status) {
