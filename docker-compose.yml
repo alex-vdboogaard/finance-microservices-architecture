@@ -89,6 +89,9 @@ services:
     restart: always
     ports:
       - "2181:2181"
+    volumes:
+      - ./docker-data/zookeeper/data:/var/lib/zookeeper/data
+      - ./docker-data/zookeeper/log:/var/lib/zookeeper/log
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -100,6 +103,8 @@ services:
     ports:
       - "29092:29092"
       - "9092:9092"
+    volumes:
+      - ./docker-data/kafka:/var/lib/kafka/data
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
