@@ -6,6 +6,7 @@
 /out/
 /build/
 /logs/
+logs
 /dependency-reduced-pom.xml
 /release.properties
 pom.xml.tag
