@@ -44,3 +44,16 @@ logging:
     name: ${LOG_DIR:./logs}/transaction-service.log
   level:
     root: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}

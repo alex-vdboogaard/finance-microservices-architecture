@@ -51,6 +51,12 @@
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 
+		<!-- Publishes metrics in Prometheus format -->
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+		</dependency>
+
 		<!-- Provides Spring Data JPA support -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -73,7 +79,7 @@
 		<dependency>
 			<groupId>com.finance</groupId>
 			<artifactId>common</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>1.0.0</version>
 		</dependency>
 
 		<!-- Adds Lombok annotations during compilation -->

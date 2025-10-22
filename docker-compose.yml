@@ -26,8 +26,8 @@ services:
 
   audit-log-service:
     build:
-      context: ./services/audit-log-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: services/audit-log-service/Dockerfile
     container_name: audit-log-service
     restart: always
     ports:
@@ -141,3 +141,29 @@ services:
       POSTGRES_DB: transaction_db
     ports:
       - "5432:5432"
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: always
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    depends_on:
+      - audit-log-service
+      - transaction-service
+      - kafka
+
+  grafana:
+    image: grafana/grafana:10.2.0
+    container_name: grafana
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./docker-data/grafana:/var/lib/grafana
+    depends_on:
+      - prometheus
