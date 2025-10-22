@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.finance.common.model.CompletedTransaction;
 import com.finance.transactionservice.dto.CreateTransactionRequest;
 import com.finance.transactionservice.dto.TransactionResponse;
 import com.finance.transactionservice.mapper.TransactionMapper;
@@ -61,9 +62,11 @@ public class TransactionService {
 
         Transaction savedTransaction = transactionRepository.save(transaction);
 
-        TransactionResponse response = TransactionMapper.toResponse(savedTransaction);
+        CompletedTransaction send = TransactionMapper.toCompletedTransaction(savedTransaction);
 
-        producer.sendTransaction(response);
+        producer.sendTransaction(send);
+
+        TransactionResponse response = TransactionMapper.toResponse(savedTransaction);
 
         return response;
     }

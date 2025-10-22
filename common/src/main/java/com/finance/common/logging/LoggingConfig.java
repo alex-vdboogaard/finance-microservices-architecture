@@ -1,4 +1,4 @@
-package com.finance.logging;
+package com.finance.common.logging;
 
 import java.util.UUID;
 

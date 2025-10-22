@@ -15,8 +15,8 @@ import com.finance.audit_log_service.dto.AuditLogResponse;
 import com.finance.audit_log_service.dto.CreateAuditLogRequest;
 import com.finance.audit_log_service.model.AuditLog;
 import com.finance.audit_log_service.service.AuditLogService;
-import com.finance.dto.ApiResponse;
-import com.finance.logging.LoggingConfig;
+import com.finance.common.dto.ApiResponse;
+import com.finance.common.logging.LoggingConfig;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
