@@ -15,6 +15,7 @@
         <module>eureka-server</module>
         <module>services/transaction-service</module>
         <module>services/audit-log-service</module>
+        <module>services/accountservice</module>
     </modules>
 
     <properties>
