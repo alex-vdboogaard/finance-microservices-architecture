@@ -57,6 +57,20 @@
 			<artifactId>micrometer-registry-prometheus</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+
+		<!-- Generates interactive OpenAPI documentation -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.6.0</version>
+        </dependency>
+
+		 <!-- Reuses shared classes from the common module -->
+		<dependency>
+			<groupId>com.finance</groupId>
+			<artifactId>common</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
@@ -87,6 +101,12 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			 <!-- Reuses shared classes from the common module -->
+            <dependency>
+                <groupId>com.finance</groupId>
+                <artifactId>common</artifactId>
+                <version>1.0.0</version>
+            </dependency>
 		</dependencies>
 	</dependencyManagement>
 
