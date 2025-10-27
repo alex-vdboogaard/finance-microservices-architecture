@@ -13,12 +13,14 @@ import com.finance.accountservice.model.Account;
 import com.finance.accountservice.service.AccountService;
 import com.finance.common.dto.*;
 import com.finance.accountservice.dto.CreateAccountRequest;
+import com.finance.accountservice.dto.DepositRequest;
 import jakarta.validation.Valid;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Slf4j
 @RestController
@@ -69,6 +71,21 @@ public class AccountController {
                 .build();
 
         return ResponseEntity.status(201).body(response);
+    }
+
+    @PostMapping("/{id}/deposit")
+    public ResponseEntity<ApiResponse<Account>> deposit(
+            @PathVariable("id") Long accountId,
+            @RequestBody @Valid DepositRequest request) {
+        Account updated = accountService.deposit(accountId, request.amount());
+
+        ApiResponse<Account> response = ApiResponse.<Account>builder()
+                .success(true)
+                .message("Deposit successful")
+                .data(updated)
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 
 }

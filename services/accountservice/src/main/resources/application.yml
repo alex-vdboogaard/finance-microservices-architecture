@@ -19,9 +19,8 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    properties:
-      "[spring.json.trusted.packages]": "*"
-      "[spring.json.add.type.headers]": false
+      properties:
+        "[spring.json.add.type.headers]": false
 
 eureka:
   client:
@@ -32,7 +31,7 @@ eureka:
   instance:
     prefer-ip-address: true
 server:
-  port: 8003
+  port: 8005
 logging:
   level:
     root: INFO
