@@ -126,6 +126,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            
             <!-- Bridges Micrometer tracing APIs to Brave -->
             <dependency>
                 <groupId>io.micrometer</groupId>

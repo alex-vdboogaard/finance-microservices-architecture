@@ -2,8 +2,6 @@ server:
   port: 8001
 
 logging:
-  file:
-    name: ${LOG_DIR:./logs}/audit-log-service.log
   level:
     root: INFO
 
