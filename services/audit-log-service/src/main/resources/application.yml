@@ -37,8 +37,9 @@ spring:
 app:
   kafka:
     topics:
-      financial-transactions: ${KAFKA_TRANSACTION_TOPIC:financial-transactions}
-
+      transaction-initiated: transaction.initiated
+      transaction-completed: transaction.completed
+      transaction-failed: transaction.failed
 eureka:
   client:
     service-url:

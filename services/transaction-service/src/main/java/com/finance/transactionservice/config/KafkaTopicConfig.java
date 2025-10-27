@@ -7,9 +7,26 @@ import org.springframework.kafka.config.TopicBuilder;
 
 @Configuration
 public class KafkaTopicConfig {
+
     @Bean
-    public NewTopic transactionsTopic() {
-        return TopicBuilder.name("financial-transactions")
+    public NewTopic transactionInitiatedTopic() {
+        return TopicBuilder.name("transaction.initiated")
+                .partitions(3)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    public NewTopic transactionCompletedTopic() {
+        return TopicBuilder.name("transaction.completed")
+                .partitions(3)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    public NewTopic transactionFailedTopic() {
+        return TopicBuilder.name("transaction.failed")
                 .partitions(3)
                 .replicas(1)
                 .build();

@@ -25,10 +25,7 @@ spring:
     properties:
       "[spring.json.trusted.packages]": "*"
       "[spring.json.add.type.headers]": false
-app:
-  kafka:
-    topics:
-      transactions: financial-transactions
+
 eureka:
   client:
     service-url:

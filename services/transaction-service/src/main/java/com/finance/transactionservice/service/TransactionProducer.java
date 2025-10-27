@@ -2,37 +2,51 @@ package com.finance.transactionservice.service;
 
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-
-import com.finance.common.model.CompletedTransaction;
-import com.finance.transactionservice.config.KafkaTopicsProperties;
-
+import com.finance.common.dto.TransferEventDTO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 public class TransactionProducer {
-    private final KafkaTemplate<String, CompletedTransaction> kafkaTemplate;
-    private final String transactionTopic;
 
-    public TransactionProducer(
-            KafkaTemplate<String, CompletedTransaction> kafkaTemplate,
-            KafkaTopicsProperties topicsProperties) {
-        this.kafkaTemplate = kafkaTemplate;
-        this.transactionTopic = topicsProperties.transactions();
-    }
+        private final KafkaTemplate<String, TransferEventDTO> kafkaTemplate;
 
-    public void sendTransaction(CompletedTransaction transaction) {
-        log.info("Publishing transaction to kafka topic: transaction={}, topic={}", transaction, transactionTopic);
-        kafkaTemplate.send(transactionTopic, transaction)
-                .thenAccept(result -> log.debug(
-                        "Kafka ack for transactionId={}, topic={}, partition={}, offset={}",
-                        transaction.id(),
-                        transactionTopic,
-                        result.getRecordMetadata().partition(),
-                        result.getRecordMetadata().offset()))
-                .exceptionally(ex -> {
-                    log.error("Failed to publish transactionId={} to topic={}", transaction.id(), transactionTopic, ex);
-                    return null;
-                });
-    }
+        // Topic names
+        private final String transactionInitiatedTopic = "transaction.initiated";
+        private final String transactionCompletedTopic = "transaction.completed";
+        private final String transactionFailedTopic = "transaction.failed";
+
+        public TransactionProducer(KafkaTemplate<String, TransferEventDTO> kafkaTemplate) {
+                this.kafkaTemplate = kafkaTemplate;
+        }
+
+        public void sendTransactionInitiated(TransferEventDTO event) {
+                publishEvent(transactionInitiatedTopic, "initiated", event);
+        }
+
+        public void sendTransactionCompleted(TransferEventDTO event) {
+                publishEvent(transactionCompletedTopic, "completed", event);
+        }
+
+        public void sendTransactionFailed(TransferEventDTO event) {
+                publishEvent(transactionFailedTopic, "failed", event);
+        }
+
+        private void publishEvent(String topic, String label, TransferEventDTO event) {
+                log.info("Publishing {} transaction event: transactionId={}, topic={}",
+                                label, event.transactionId(), topic);
+
+                kafkaTemplate.send(topic, event)
+                                .thenAccept(result -> log.debug(
+                                                "Kafka ack for transactionId={}, topic={}, partition={}, offset={}",
+                                                event.transactionId(),
+                                                topic,
+                                                result.getRecordMetadata().partition(),
+                                                result.getRecordMetadata().offset()))
+                                .exceptionally(ex -> {
+                                        log.error("Failed to publish transactionId={} to topic={}",
+                                                        event.transactionId(), topic, ex);
+                                        return null;
+                                });
+        }
 }

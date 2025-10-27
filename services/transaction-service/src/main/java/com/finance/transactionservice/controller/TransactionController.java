@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.finance.common.dto.ApiResponse;
 import com.finance.common.dto.PageResponse;
 import com.finance.common.logging.LoggingConfig;
-import com.finance.transactionservice.dto.CreateTransactionRequest;
-import com.finance.transactionservice.dto.TransactionResponse;
+import com.finance.common.dto.TransferEventDTO;
+import com.finance.common.dto.TransferRequestDTO;
 import com.finance.transactionservice.service.TransactionService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,11 +35,11 @@ public class TransactionController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<PageResponse<TransactionResponse>>> getAllTransactions(
+    public ResponseEntity<ApiResponse<PageResponse<TransferEventDTO>>> getAllTransactions(
             @PageableDefault(size = 10) Pageable pageable) {
-        Page<TransactionResponse> page = transactionService.findAll(pageable);
+        Page<TransferEventDTO> page = transactionService.findAll(pageable);
 
-        PageResponse<TransactionResponse> data = PageResponse.<TransactionResponse>builder()
+        PageResponse<TransferEventDTO> data = PageResponse.<TransferEventDTO>builder()
                 .content(page.getContent())
                 .page(page.getNumber())
                 .size(page.getSize())
@@ -51,8 +51,8 @@ public class TransactionController {
                 .hasPrevious(page.hasPrevious())
                 .build();
 
-        ApiResponse<PageResponse<TransactionResponse>> response = ApiResponse
-                .<PageResponse<TransactionResponse>>builder()
+        ApiResponse<PageResponse<TransferEventDTO>> response = ApiResponse
+                .<PageResponse<TransferEventDTO>>builder()
                 .success(true)
                 .message("Transactions fetched successfully")
                 .data(data)
@@ -62,16 +62,16 @@ public class TransactionController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<TransactionResponse>> createTransaction(
-            @Valid @RequestBody CreateTransactionRequest transactionRequest,
+    public ResponseEntity<ApiResponse<TransferEventDTO>> createTransaction(
+            @Valid @RequestBody TransferRequestDTO transactionRequest,
             HttpServletRequest request) {
         LoggingConfig.startRequest(request.getRequestURI(), "transaction-service");
         log.info("Received new transaction request: {}", transactionRequest);
 
         try {
-            TransactionResponse createdTransaction = transactionService.create(transactionRequest);
+            TransferEventDTO createdTransaction = transactionService.create(transactionRequest);
 
-            ApiResponse<TransactionResponse> response = ApiResponse.<TransactionResponse>builder()
+            ApiResponse<TransferEventDTO> response = ApiResponse.<TransferEventDTO>builder()
                     .success(true)
                     .message("Transaction created successfully")
                     .data(createdTransaction)

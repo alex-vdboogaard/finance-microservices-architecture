@@ -13,15 +13,15 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 
-import com.finance.common.model.CompletedTransaction;
+import com.finance.common.dto.TransferEventDTO;
 
 @Configuration
 @EnableKafka
 public class KafkaConsumerConfig {
 
     @Bean
-    public ConsumerFactory<String, CompletedTransaction> consumerFactory(KafkaProperties kafkaProperties) {
-        JsonDeserializer<CompletedTransaction> deserializer = new JsonDeserializer<>(CompletedTransaction.class);
+    public ConsumerFactory<String, TransferEventDTO> consumerFactory(KafkaProperties kafkaProperties) {
+        JsonDeserializer<TransferEventDTO> deserializer = new JsonDeserializer<>(TransferEventDTO.class);
         deserializer.addTrustedPackages("*");
 
         Map<String, Object> props = kafkaProperties.buildConsumerProperties();
@@ -33,9 +33,9 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, CompletedTransaction> kafkaListenerContainerFactory(
-            ConsumerFactory<String, CompletedTransaction> consumerFactory) {
-        ConcurrentKafkaListenerContainerFactory<String, CompletedTransaction> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, TransferEventDTO> kafkaListenerContainerFactory(
+            ConsumerFactory<String, TransferEventDTO> consumerFactory) {
+        ConcurrentKafkaListenerContainerFactory<String, TransferEventDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
         return factory;
     }
