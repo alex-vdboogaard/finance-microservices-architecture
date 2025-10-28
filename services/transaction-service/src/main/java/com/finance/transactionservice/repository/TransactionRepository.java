@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
 import com.finance.transactionservice.model.Transaction;
 
 @Repository
-public interface TransactionRepository extends JpaRepository<Transaction, Long> {
+public interface TransactionRepository extends JpaRepository<Transaction, String> {
 }

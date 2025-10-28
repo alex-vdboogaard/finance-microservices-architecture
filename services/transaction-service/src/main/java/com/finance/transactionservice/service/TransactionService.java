@@ -9,8 +9,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.finance.common.dto.TransferEventDTO;
 import com.finance.common.dto.TransferRequestDTO;
+import com.finance.transactionservice.mapper.TransactionMapper;
 import com.finance.transactionservice.model.Transaction;
 import com.finance.transactionservice.model.Transaction.TransactionStatus;
 import com.finance.transactionservice.repository.TransactionRepository;
@@ -19,12 +21,15 @@ import com.finance.transactionservice.repository.TransactionRepository;
 public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final TransactionProducer producer;
+    private final TransactionMapper transactionMapper;
 
     public TransactionService(
             TransactionRepository transactionRepository,
-            TransactionProducer producer) {
+            TransactionProducer producer,
+            TransactionMapper transactionMapper) {
         this.transactionRepository = transactionRepository;
         this.producer = producer;
+        this.transactionMapper = transactionMapper;
     }
 
     @Transactional(readOnly = true)
@@ -68,4 +73,12 @@ public class TransactionService {
         return event;
     }
 
+    @Transactional
+    public TransferEventDTO updateStatus(TransferEventDTO event, Transaction.TransactionStatus status) {
+        Transaction tx = transactionRepository.findById(event.transactionId())
+                .orElseThrow(() -> new RuntimeException("Transaction not found"));
+
+        tx.setStatus(status);
+        return TransactionMapper.toDTO(tx);
+    }
 }
