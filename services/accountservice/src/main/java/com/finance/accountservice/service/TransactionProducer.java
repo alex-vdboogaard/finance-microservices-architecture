@@ -2,7 +2,9 @@ package com.finance.accountservice.service;
 
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+
 import com.finance.common.dto.TransferEventDTO;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -12,7 +14,6 @@ public class TransactionProducer {
         private final KafkaTemplate<String, TransferEventDTO> kafkaTemplate;
 
         // Topic names
-        private final String transactionInitiatedTopic = "transaction.initiated";
         private final String transactionCompletedTopic = "transaction.completed";
         private final String transactionFailedTopic = "transaction.failed";
 
