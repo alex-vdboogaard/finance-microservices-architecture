@@ -15,8 +15,6 @@ public class TransactionProducer {
 
         // Topic names
         private final String transactionInitiatedTopic = "transaction.initiated";
-        private final String transactionCompletedTopic = "transaction.completed";
-        private final String transactionFailedTopic = "transaction.failed";
 
         public TransactionProducer(KafkaTemplate<String, TransferEventDTO> kafkaTemplate) {
                 this.kafkaTemplate = kafkaTemplate;
