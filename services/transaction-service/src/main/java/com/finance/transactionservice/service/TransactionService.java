@@ -21,7 +21,6 @@ import com.finance.transactionservice.repository.TransactionRepository;
 public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final TransactionProducer producer;
-    private final TransactionMapper transactionMapper;
 
     public TransactionService(
             TransactionRepository transactionRepository,
@@ -29,7 +28,6 @@ public class TransactionService {
             TransactionMapper transactionMapper) {
         this.transactionRepository = transactionRepository;
         this.producer = producer;
-        this.transactionMapper = transactionMapper;
     }
 
     @Transactional(readOnly = true)
