@@ -4,6 +4,7 @@ import { cn } from './ui/utils';
 
 const navigationLinks = [
   { label: 'Dashboard', to: '/' },
+  { label: 'Transactions', to: '/transactions' },
   { label: 'Audit Log', to: '/audit-log' }
 ];
 

@@ -3,6 +3,7 @@ import React from "react"
 
 import { AppLayout } from '../layouts/AppLayout';
 import { AuditLogPage } from '../pages/AuditLogPage';
+import { TransactionsPage } from '../pages/TransactionsPage';
 import { DashboardPage } from '../pages/DashboardPage';
 
 export function AppRoutes() {
@@ -10,6 +11,7 @@ export function AppRoutes() {
     <Routes>
       <Route path="/" element={<AppLayout />}>
         <Route index element={<DashboardPage />} />
+        <Route path="transactions" element={<TransactionsPage />} />
         <Route path="audit-log" element={<AuditLogPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

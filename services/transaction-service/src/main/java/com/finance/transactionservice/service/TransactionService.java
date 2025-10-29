@@ -24,8 +24,7 @@ public class TransactionService {
 
     public TransactionService(
             TransactionRepository transactionRepository,
-            TransactionProducer producer,
-            TransactionMapper transactionMapper) {
+            TransactionProducer producer) {
         this.transactionRepository = transactionRepository;
         this.producer = producer;
     }
