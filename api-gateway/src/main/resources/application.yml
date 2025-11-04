@@ -4,13 +4,17 @@ server:
 spring:
   application:
     name: api-gateway
+
+  data :
+    redis:
+      host: redis      
+      port: 6379
+
   cloud:
     gateway:
       default-filters:
-        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST # ensure single CORS header even if downstream sets one
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
       globalcors:
-        # Ensure CORS is handled by the simple URL handler mapping so preflight
-        # requests are processed before routing in Spring Cloud Gateway.
         add-to-simple-url-handler-mapping: true
         cors-configurations:
           '[/**]':
@@ -28,9 +32,44 @@ spring:
             exposedHeaders:
               - "*"
             allowCredentials: true
+
+      routes:
+        - id: account-service
+          uri: http://account-service:8003
+          predicates:
+            - Path=/api/v1/accounts/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                "[redis-rate-limiter.replenishRate]": 5
+                "[redis-rate-limiter.burstCapacity]": 10
+                key-resolver: "#{@ipKeyResolver}"
+
+        - id: audit-log-service
+          uri: http://account-service:8001
+          predicates:
+            - Path=/api/v1/logs/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                "[redis-rate-limiter.replenishRate]": 5
+                "[redis-rate-limiter.burstCapacity]": 10
+                key-resolver: "#{@ipKeyResolver}"
+
+        - id: transaction-service
+          uri: http://transaction-service:8082
+          predicates:
+            - Path=/api/v1/transactions/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                "[redis-rate-limiter.replenishRate]": 5
+                "[redis-rate-limiter.burstCapacity]": 10
+                key-resolver: "#{@ipKeyResolver}"
+
       discovery:
         locator:
-          enabled: true # allow automatic mapping from Eureka
+          enabled: true
           lower-case-service-id: true
 
 management:

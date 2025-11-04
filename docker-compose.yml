@@ -61,6 +61,27 @@ services:
       - eureka-server
       - kafka
 
+
+  account-service:
+    build:
+      context: .
+      dockerfile: services/accountservice/Dockerfile
+    container_name: account-service
+    restart: always
+    ports:
+      - "8005:8005"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/account_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      - postgres
+      - eureka-server
+      - kafka
+
   eureka-server:
     build:
       context: ./eureka-server
@@ -167,3 +188,9 @@ services:
       - ./docker-data/grafana:/var/lib/grafana
     depends_on:
       - prometheus
+
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"

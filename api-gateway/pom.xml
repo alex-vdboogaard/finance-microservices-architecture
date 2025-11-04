@@ -43,6 +43,12 @@
 			<artifactId>spring-cloud-starter-gateway</artifactId>
 		</dependency>
 
+		<!-- Provides rate limiting with Redis -->
+		<dependency>
+   			<groupId>org.springframework.boot</groupId>
+    		<artifactId>spring-boot-starter-data-redis-reactive</artifactId>
+		</dependency>
+
 		<!-- Registers the gateway with the Eureka service registry -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>

@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;;
 
 @Slf4j
 @RestController
-@RequestMapping("/logs")
+@RequestMapping("api/v1/logs")
 @Tag(name = "Audit Logs", description = "Endpoints for retrieving and creating audit logs")
 public class AuditLogController {
     @Autowired
