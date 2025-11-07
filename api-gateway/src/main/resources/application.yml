@@ -5,15 +5,23 @@ spring:
   application:
     name: api-gateway
 
-  data :
+  data:
     redis:
-      host: redis      
+      host: redis
       port: 6379
 
   cloud:
     gateway:
+      # GLOBAL RATE LIMITER (applies to every route and unmatched paths)
       default-filters:
+        - name: RequestRateLimiter
+          args:
+            "[redis-rate-limiter.replenishRate]": 5     # 5 requests per second
+            "[redis-rate-limiter.burstCapacity]": 10    # allow short bursts up to 10
+            key-resolver: "#{@ipKeyResolver}"
+
         - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
+
       globalcors:
         add-to-simple-url-handler-mapping: true
         cors-configurations:
@@ -35,42 +43,30 @@ spring:
 
       routes:
         - id: account-service
-          uri: http://account-service:8003
+          uri: http://account-service:8005
           predicates:
             - Path=/api/v1/accounts/**
-          filters:
-            - name: RequestRateLimiter
-              args:
-                "[redis-rate-limiter.replenishRate]": 5
-                "[redis-rate-limiter.burstCapacity]": 10
-                key-resolver: "#{@ipKeyResolver}"
 
         - id: audit-log-service
-          uri: http://account-service:8001
+          uri: http://audit-log-service:8001
           predicates:
             - Path=/api/v1/logs/**
-          filters:
-            - name: RequestRateLimiter
-              args:
-                "[redis-rate-limiter.replenishRate]": 5
-                "[redis-rate-limiter.burstCapacity]": 10
-                key-resolver: "#{@ipKeyResolver}"
 
         - id: transaction-service
-          uri: http://transaction-service:8082
+          uri: http://transaction-service:8003
           predicates:
             - Path=/api/v1/transactions/**
-          filters:
-            - name: RequestRateLimiter
-              args:
-                "[redis-rate-limiter.replenishRate]": 5
-                "[redis-rate-limiter.burstCapacity]": 10
-                key-resolver: "#{@ipKeyResolver}"
 
       discovery:
         locator:
           enabled: true
           lower-case-service-id: true
+          filters:
+            - name: RequestRateLimiter
+              args:
+                "[redis-rate-limiter.replenishRate]": 5
+                "[redis-rate-limiter.burstCapacity]": 10
+                key-resolver: "#{@ipKeyResolver}"
 
 management:
   endpoints:

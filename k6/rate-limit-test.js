@@ -2,7 +2,7 @@ import http from 'k6/http';
 import { check, sleep } from 'k6';
 import { Counter } from 'k6/metrics';
 
-const BASE_URL = 'http://localhost:8080/audit-log-service/api/v1/logs';
+const BASE_URL = 'http://localhost:8080/api/v1/logs';
 
 export const options = {
   stages: [
