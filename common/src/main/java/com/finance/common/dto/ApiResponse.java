@@ -1,20 +1,27 @@
 package com.finance.common.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import java.time.LocalDateTime;
+import lombok.*;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApiResponse<T> {
-    private boolean success;
-    private String message;
     private T data;
+    private Meta meta;
 
-    @Builder.Default
-    private LocalDateTime timestamp = LocalDateTime.now();
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Meta {
+        private String message;
+
+        @Builder.Default
+        private OffsetDateTime timestamp = OffsetDateTime.now(ZoneOffset.UTC);
+    }
 }

@@ -34,8 +34,7 @@ public class AuditLogController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<AuditLog>>> getAuditLogs() {
         ApiResponse<List<AuditLog>> response = ApiResponse.<List<AuditLog>>builder()
-                .success(true)
-                .message("Fetched audit logs successfully")
+                .meta(ApiResponse.Meta.builder().message("Fetched audit logs successfully").build())
                 .data(auditLogService.getAll())
                 .build();
 
@@ -45,8 +44,7 @@ public class AuditLogController {
     @GetMapping("/action")
     public ResponseEntity<ApiResponse<List<AuditLog>>> getAuditLogsByAction(@RequestParam String action) {
         ApiResponse<List<AuditLog>> response = ApiResponse.<List<AuditLog>>builder()
-                .success(true)
-                .message("Fetched audit logs successfully")
+                .meta(ApiResponse.Meta.builder().message("Fetched audit logs successfully").build())
                 .data(auditLogService.findByAction(action))
                 .build();
 
@@ -64,8 +62,7 @@ public class AuditLogController {
         try {
             AuditLogResponse created = auditLogService.createAuditLog(request);
             ApiResponse<AuditLogResponse> response = ApiResponse.<AuditLogResponse>builder()
-                    .success(true)
-                    .message("Created audit log successfully")
+                    .meta(ApiResponse.Meta.builder().message("Created audit log successfully").build())
                     .data(created)
                     .build();
 

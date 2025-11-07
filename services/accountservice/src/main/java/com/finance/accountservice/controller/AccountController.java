@@ -6,21 +6,22 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.finance.accountservice.model.Account;
-import com.finance.accountservice.service.AccountService;
-import com.finance.common.dto.*;
 import com.finance.accountservice.dto.CreateAccountRequest;
 import com.finance.accountservice.dto.DepositRequest;
-import jakarta.validation.Valid;
+import com.finance.accountservice.model.Account;
+import com.finance.accountservice.service.AccountService;
+import com.finance.common.dto.ApiResponse;
+import com.finance.common.dto.PageResponse;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @Slf4j
 @RestController
@@ -52,8 +53,7 @@ public class AccountController {
 
         ApiResponse<PageResponse<Account>> response = ApiResponse
                 .<PageResponse<Account>>builder()
-                .success(true)
-                .message("Accounts fetched successfully")
+                .meta(ApiResponse.Meta.builder().message("Accounts fetched successfully").build())
                 .data(data)
                 .build();
 
@@ -65,8 +65,7 @@ public class AccountController {
         Account created = accountService.create(request);
 
         ApiResponse<Account> response = ApiResponse.<Account>builder()
-                .success(true)
-                .message("Account created successfully")
+                .meta(ApiResponse.Meta.builder().message("Account created successfully").build())
                 .data(created)
                 .build();
 
@@ -80,9 +79,10 @@ public class AccountController {
         Account updated = accountService.deposit(accountId, request.amount());
 
         ApiResponse<Account> response = ApiResponse.<Account>builder()
-                .success(true)
-                .message("Deposit successful")
                 .data(updated)
+                .meta(ApiResponse.Meta.builder()
+                        .message("Deposit successful")
+                        .build())
                 .build();
 
         return ResponseEntity.ok(response);

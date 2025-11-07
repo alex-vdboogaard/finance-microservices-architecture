@@ -53,8 +53,7 @@ public class TransactionController {
 
         ApiResponse<PageResponse<TransferEventDTO>> response = ApiResponse
                 .<PageResponse<TransferEventDTO>>builder()
-                .success(true)
-                .message("Transactions fetched successfully")
+                .meta(ApiResponse.Meta.builder().message("Transactions fetched successfully").build())
                 .data(data)
                 .build();
 
@@ -72,8 +71,7 @@ public class TransactionController {
             TransferEventDTO createdTransaction = transactionService.create(transactionRequest);
 
             ApiResponse<TransferEventDTO> response = ApiResponse.<TransferEventDTO>builder()
-                    .success(true)
-                    .message("Transaction created successfully")
+                    .meta(ApiResponse.Meta.builder().message("Transaction created successfully").build())
                     .data(createdTransaction)
                     .build();
 
