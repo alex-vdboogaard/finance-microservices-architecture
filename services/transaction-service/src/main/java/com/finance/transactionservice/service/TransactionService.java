@@ -53,16 +53,16 @@ public class TransactionService {
                 .build();
 
         // Save to database
-        transactionRepository.save(transaction);
+        Transaction saved = transactionRepository.save(transaction);
 
         // Convert to TransferEventDTO for Kafka
         TransferEventDTO event = new TransferEventDTO(
-                transaction.getTransactionId(),
-                transaction.getFromAccountId(),
-                transaction.getToAccountId(),
-                transaction.getAmount(),
-                transaction.getStatus().name(),
-                transaction.getCreatedAt());
+                saved.getTransactionId(),
+                saved.getFromAccountId(),
+                saved.getToAccountId(),
+                saved.getAmount(),
+                saved.getStatus().name(),
+                saved.getCreatedAt());
 
         // Publish to Kafka
         producer.sendTransactionInitiated(event);
