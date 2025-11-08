@@ -1,66 +1,5 @@
 services:
-  frontend:
-    image: node:20
-    container_name: frontend
-    working_dir: /app
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-    ports:
-      - "5173:5173"
-    command: sh -c "npm install && npm run dev"
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-    depends_on:
-      - api-gateway
-
-  mysql:
-    image: mysql:8
-    container_name: mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: audit_db
-    ports:
-      - "3307:3306" # host 3307 → container 3306
-
-  audit-log-service:
-    build:
-      context: .
-      dockerfile: services/audit-log-service/Dockerfile
-    container_name: audit-log-service
-    restart: always
-    ports:
-      - "8001:8001"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/audit_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: password
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
-    depends_on:
-      - mysql
-      - eureka-server
-
-  transaction-service:
-    build:
-      context: .
-      dockerfile: services/transaction-service/Dockerfile
-    container_name: transaction-service
-    restart: always
-    ports:
-      - "8003:8003"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/transaction_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: password
-      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
-    depends_on:
-      - postgres
-      - eureka-server
-      - kafka
-
+  # Accounts microservice (Spring Boot). Manages user accounts; uses PostgreSQL and Kafka; registers with Eureka.
   account-service:
     build:
       context: .
@@ -81,15 +20,7 @@ services:
       - eureka-server
       - kafka
 
-  eureka-server:
-    build:
-      context: ./eureka-server
-      dockerfile: Dockerfile
-    container_name: eureka-server
-    restart: always
-    ports:
-      - "8761:8761"
-
+  # API Gateway (Spring Cloud Gateway). Routes external requests to backend services via Eureka discovery.
   api-gateway:
     build:
       context: ./api-gateway
@@ -103,19 +34,70 @@ services:
     depends_on:
       - eureka-server
 
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.5.0
-    container_name: zookeeper
+  # Audit logging service. Persists audit events to MySQL; registers with Eureka.
+  audit-log-service:
+    build:
+      context: .
+      dockerfile: services/audit-log-service/Dockerfile
+    container_name: audit-log-service
     restart: always
     ports:
-      - "2181:2181"
-    volumes:
-      - ./docker-data/zookeeper/data:/var/lib/zookeeper/data
-      - ./docker-data/zookeeper/log:/var/lib/zookeeper/log
+      - "8001:8001"
     environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/audit_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: password
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+    depends_on:
+      - mysql
+      - eureka-server
 
+  # Service registry (Netflix Eureka). Enables service discovery for the microservices.
+  eureka-server:
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    container_name: eureka-server
+    restart: always
+    ports:
+      - "8761:8761"
+
+  # Frontend dev server (Vite/Node). Web UI that calls backend through the API gateway.
+  frontend:
+    image: node:20
+    container_name: frontend
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    command: sh -c "npm install && npm run dev"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - api-gateway
+
+  # Grafana dashboards. Visualizes metrics (Prometheus) and logs (Loki).
+  grafana:
+    image: grafana/grafana:10.2.0
+    container_name: grafana
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel
+      - GF_DATAPROXY_TIMEOUT=60
+      - GF_DATAPROXY_CONCURRENT_LIMIT=100
+    volumes:
+      - ./docker-data/grafana:/var/lib/grafana
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+    depends_on:
+      - prometheus
+
+  # Apache Kafka broker. Event streaming backbone for services; coordinated by Zookeeper.
   kafka:
     image: confluentinc/cp-kafka:7.5.0
     container_name: kafka
@@ -136,6 +118,7 @@ services:
     depends_on:
       - zookeeper
 
+  # Kafka UI. Web interface to inspect topics, consumers, and brokers.
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-ui
@@ -151,6 +134,29 @@ services:
       - kafka
       - zookeeper
 
+  # Grafana Loki. Log aggregation backend receiving logs from Promtail.
+  loki:
+    image: grafana/loki:2.9.3
+    container_name: loki
+    command: ["-config.file=/etc/loki/config/loki-config.yml"]
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./monitoring/loki-config.yml:/etc/loki/config/loki-config.yml:ro
+      - ./docker-data/loki:/loki
+
+  # MySQL database. Stores audit-log-service data.
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: audit_db
+    ports:
+      - "3307:3306" # host 3307 → container 3306
+
+  # PostgreSQL database. Stores transactional data (accounts, transactions).
   postgres:
     image: postgres:16
     container_name: postgres
@@ -162,6 +168,7 @@ services:
     ports:
       - "5432:5432"
 
+  # Prometheus metrics. Scrapes services and exposes metrics for Grafana dashboards.
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -175,40 +182,7 @@ services:
       - transaction-service
       - kafka
 
-  grafana:
-    image: grafana/grafana:10.2.0
-    container_name: grafana
-    restart: always
-    ports:
-      - "3000:3000"
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-      - GF_INSTALL_PLUGINS=grafana-piechart-panel
-      - GF_DATAPROXY_TIMEOUT=60
-      - GF_DATAPROXY_CONCURRENT_LIMIT=100
-    volumes:
-      - ./docker-data/grafana:/var/lib/grafana
-      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
-      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
-    depends_on:
-      - prometheus
-
-  redis:
-    image: redis:7
-    container_name: redis
-    ports:
-      - "6379:6379"
-
-  loki:
-    image: grafana/loki:2.9.3
-    container_name: loki
-    command: ["-config.file=/etc/loki/config/loki-config.yml"]
-    ports:
-      - "3100:3100"
-    volumes:
-      - ./monitoring/loki-config.yml:/etc/loki/config/loki-config.yml:ro
-      - ./docker-data/loki:/loki
-
+  # Promtail log shipper. Forwards container logs to Loki.
   promtail:
     image: grafana/promtail:2.9.3
     container_name: promtail
@@ -219,3 +193,45 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     depends_on:
       - loki
+
+  # Redis cache. In-memory store for caching or messaging used by services.
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  # Transactions microservice (Spring Boot). Handles transactions; uses PostgreSQL and Kafka; registers with Eureka.
+  transaction-service:
+    build:
+      context: .
+      dockerfile: services/transaction-service/Dockerfile
+    container_name: transaction-service
+    restart: always
+    ports:
+      - "8003:8003"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/transaction_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      - postgres
+      - eureka-server
+      - kafka
+
+  # Zookeeper. Coordinates Kafka broker.
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: zookeeper
+    restart: always
+    ports:
+      - "2181:2181"
+    volumes:
+      - ./docker-data/zookeeper/data:/var/lib/zookeeper/data
+      - ./docker-data/zookeeper/log:/var/lib/zookeeper/log
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
