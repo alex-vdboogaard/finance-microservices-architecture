@@ -61,7 +61,6 @@ services:
       - eureka-server
       - kafka
 
-
   account-service:
     build:
       context: .
@@ -186,6 +185,7 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
       - ./docker-data/grafana:/var/lib/grafana
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
     depends_on:
       - prometheus
 
@@ -194,3 +194,24 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
+
+  loki:
+    image: grafana/loki:2.9.3
+    container_name: loki
+    command: ["-config.file=/etc/loki/config/loki-config.yml"]
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./monitoring/loki-config.yml:/etc/loki/config/loki-config.yml:ro
+      - ./docker-data/loki:/loki
+
+  promtail:
+    image: grafana/promtail:2.9.3
+    container_name: promtail
+    command: ["-config.file=/etc/promtail/config.yml"]
+    volumes:
+      - ./monitoring/promtail-config.yml:/etc/promtail/config.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - loki

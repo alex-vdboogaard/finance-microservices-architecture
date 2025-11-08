@@ -25,6 +25,7 @@ This is a personal portfolio project where I designed and built an event‑drive
 - Service discovery with Eureka to decouple routing from static hostnames.
 - Polyglot persistence to demonstrate trade‑offs: PostgreSQL (accounts, transactions) and MySQL (audit logs).
 - Observability with Prometheus + Grafana; Kafka UI for topic/message inspection.
+- Centralized logs with Grafana Loki + Promtail.
 - Load testing via k6 to stress the workflow through the gateway or directly to services.
 
 
@@ -60,6 +61,7 @@ This is a personal portfolio project where I designed and built an event‑drive
 - PostgreSQL, MySQL, Spring Data JPA
 - Redis (rate limiter), Docker Compose
 - Prometheus, Grafana, Kafka UI
+ - Loki, Promtail
 - k6 for load testing
 
 
@@ -84,6 +86,20 @@ This is a personal portfolio project where I designed and built an event‑drive
 - Harden failure/retry policies and dead‑letter topics.
 
 
+**Logs (Loki + Promtail)**
+- Start services: `docker compose up -d loki promtail grafana` (or `docker compose up -d` to run everything).
+- Promtail scrapes Docker container logs using the Docker socket and forwards them to Loki.
+- Open Grafana at `http://localhost:3000` (user: `admin`, pass: `admin`). The Loki datasource is auto-provisioned under “Explore”.
+- Sample LogQL queries:
+  - `{compose_service="transaction-service"}`
+  - `{service="transaction-service"} |= "PENDING"`
+  - `{compose_service=~"account-service|transaction-service"} |= "ERROR"`
+
+Notes:
+- The pipeline extracts structured fields from JSON logs (level, logger, service) as labels for querying, and displays the original `message` as the log line.
+- High-cardinality fields like `requestId` are intentionally not labeled to keep Loki efficient.
+
+
 **Repository Map**
 - `api-gateway/` — Spring Cloud Gateway config and filters.
 - `eureka-server/` — Service registry.
@@ -92,5 +108,7 @@ This is a personal portfolio project where I designed and built an event‑drive
 - `services/audit-log-service/` — Audit APIs, Kafka consumers, MySQL persistence.
 - `k6/` — Load testing scripts.
 - `monitoring/` — Prometheus config; Grafana persists in `docker-data/grafana/`.
+- `monitoring/loki-config.yml` — Loki single-binary config (filesystem storage for local dev).
+- `monitoring/promtail-config.yml` — Promtail to scrape Docker container logs and push to Loki.
+- `monitoring/grafana/datasources/loki.yml` — Auto-provisioned Grafana Loki datasource.
 - `docker-compose.yml` — Full local stack.
-
