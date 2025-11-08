@@ -7,7 +7,7 @@ export const options = {
   iterations: 300,  // total 300 requests
 };
 
-const BASE_URL = 'http://localhost:8080/transaction-service/api/v1/transactions';
+const BASE_URL = 'http://localhost:8080/api/v1/transactions';
 const ACCOUNT_IDS = [1001, 1002, 1003, 1004, 1005];
 
 // Function to generate a random transaction

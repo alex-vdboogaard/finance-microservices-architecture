@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import type { TransferEvent, TransferEventFilters, TransferEventPage } from '../types/transfer-event';
 
 // Mirror audit-log hook style; adjust host if running inside Docker network
-const TRANSACTIONS_API_URL = 'http://localhost:8080/transaction-service/transactions';
+const TRANSACTIONS_API_URL = 'http://localhost:8080/api/v1/transactions';
 
 function extractTransferEvents(payload: unknown): TransferEvent[] | null {
   // Direct array response

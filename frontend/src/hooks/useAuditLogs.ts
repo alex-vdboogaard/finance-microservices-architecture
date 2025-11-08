@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import type { AuditLog, AuditLogFilters } from '../types/audit-log';
 
-const API_BASE_URL = 'http://localhost:8080/audit-log-service';
+const API_BASE_URL = 'http://localhost:8080/api/v1';
 
 function extractAuditLogs(payload: unknown): AuditLog[] | null {
   if (Array.isArray(payload)) {
