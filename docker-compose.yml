@@ -156,6 +156,26 @@ services:
     ports:
       - "3307:3306" # host 3307 → container 3306
 
+  # Notification service. Consumes transaction events and persists notifications; registers with Eureka.
+  notification-service:
+    build:
+      context: .
+      dockerfile: services/notification-service/Dockerfile
+    container_name: notification-service
+    restart: always
+    ports:
+      - "8007:8007"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/audit_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: password
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    depends_on:
+      - mysql
+      - eureka-server
+      - kafka
+
   # PostgreSQL database. Stores transactional data (accounts, transactions).
   postgres:
     image: postgres:16

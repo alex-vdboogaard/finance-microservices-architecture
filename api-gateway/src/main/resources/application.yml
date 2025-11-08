@@ -16,8 +16,8 @@ spring:
       default-filters:
         - name: RequestRateLimiter
           args:
-            "[redis-rate-limiter.replenishRate]": 5     # 5 requests per second
-            "[redis-rate-limiter.burstCapacity]": 10    # allow short bursts up to 10
+            "[redis-rate-limiter.replenishRate]": 1000     # 5 requests per second
+            "[redis-rate-limiter.burstCapacity]": 2000    # allow short bursts up to 10
             key-resolver: "#{@ipKeyResolver}"
 
         - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
@@ -51,6 +51,11 @@ spring:
           uri: http://audit-log-service:8001
           predicates:
             - Path=/api/v1/logs/**
+
+        - id: notification-service
+          uri: http://notification-service:8007
+          predicates:
+            - Path=/api/v1/notifications/**
 
         - id: transaction-service
           uri: http://transaction-service:8003

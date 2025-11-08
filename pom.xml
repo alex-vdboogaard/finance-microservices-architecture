@@ -16,6 +16,7 @@
         <module>services/transaction-service</module>
         <module>services/audit-log-service</module>
         <module>services/accountservice</module>
+        <module>services/notification-service</module>
     </modules>
 
     <properties>
