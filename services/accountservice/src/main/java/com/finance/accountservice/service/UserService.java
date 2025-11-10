@@ -7,8 +7,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.finance.accountservice.dto.CreateUserRequest;
+import com.finance.accountservice.dto.UserAndAccounts;
 import com.finance.accountservice.dto.UserResponse;
 import com.finance.accountservice.exception.UserNotFoundException;
+import com.finance.accountservice.mapper.AccountMapper;
 import com.finance.accountservice.mapper.UserMapper;
 import com.finance.accountservice.model.User;
 import com.finance.accountservice.repository.UserRepository;
@@ -20,8 +22,6 @@ public class UserService {
 
     @Autowired
     PasswordEncoder passwordEncoder;
-
-    UserMapper mapper;
 
     public UserResponse createUser(CreateUserRequest request) throws CloneNotSupportedException {
         if (userRepository.findByEmail(request.email()) != null) {
@@ -47,5 +47,18 @@ public class UserService {
         return userRepository.findById(id)
                 .map(UserMapper::toResponse)
                 .orElseThrow(() -> new UserNotFoundException("User with ID " + id + " not found"));
+    }
+
+    public UserAndAccounts getUserWithAccounts(Long id) {
+        User user = userRepository.findByUserIdWithAccounts(id)
+                .orElseThrow(() -> new UserNotFoundException("User with ID " + id + " not found"));
+
+        return new UserAndAccounts(
+                user.getUserId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getGovermentId(),
+                AccountMapper.toResponseList(user.getAccounts()));
     }
 }

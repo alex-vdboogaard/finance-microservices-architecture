@@ -6,19 +6,24 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.finance.accountservice.model.Account;
+import com.finance.accountservice.model.User;
 import com.finance.accountservice.repository.AccountRepository;
+import com.finance.accountservice.repository.UserRepository;
 import com.finance.common.dto.TransferEventDTO;
 
 import jakarta.transaction.Transactional;
 
 import com.finance.accountservice.dto.CreateAccountRequest;
+import com.finance.accountservice.exception.UserNotFoundException;
 
 @Service
 public class AccountService {
     private final AccountRepository accountRepository;
+    private final UserRepository userRepository;
 
-    public AccountService(AccountRepository accountRepository) {
+    public AccountService(AccountRepository accountRepository, UserRepository userRepository) {
         this.accountRepository = accountRepository;
+        this.userRepository = userRepository;
     }
 
     public Page<Account> getAccounts(Pageable pageable) {
@@ -26,11 +31,15 @@ public class AccountService {
     }
 
     public Account create(CreateAccountRequest request) {
+        User user = userRepository.findById(request.userId())
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
         Account account = Account.builder()
-                .userId(request.userId())
+                .user(user)
                 .accountNumber(request.accountNumber())
                 .balance(0.0)
                 .build();
+
         return accountRepository.save(account);
     }
 
