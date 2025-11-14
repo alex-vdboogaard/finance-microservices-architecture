@@ -1,7 +1,11 @@
 package com.finance.common.dto;
 
+import lombok.NonNull;
+
 public record TransferRequestDTO(
-        Long fromAccountId,
-        Long toAccountId,
-        Double amount) {
+                @NonNull Long fromAccountId,
+
+                @NonNull Long toAccountId,
+
+                @NonNull Double amount) {
 }
