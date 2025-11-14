@@ -16,12 +16,12 @@ public class TransactionConsumer {
     }
 
     @KafkaListener(topics = "transaction.initiated", groupId = "account-service-group", containerFactory = "kafkaListenerContainerFactory")
-    public void consumeTransactionInitiated(TransferEventDTO transaction) {
-        boolean success = accountService.transferMoney(transaction);
-        if (success) {
-            producer.sendTransactionCompleted(transaction);
+    public void consumeTransactionInitiated(TransferEventDTO t) {
+        TransferEventDTO transfer = accountService.transferMoney(t);
+        if ("SUCCESS".equals(transfer.status())) {
+            producer.sendTransactionCompleted(transfer);
         } else {
-            producer.sendTransactionFailed(transaction);
+            producer.sendTransactionFailed(transfer);
         }
     }
 

@@ -36,6 +36,7 @@ public class Transaction {
     @Builder.Default
     private TransactionStatus status = TransactionStatus.PENDING;
 
+    private String description;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

@@ -38,6 +38,7 @@ public class TransactionService {
                         tx.getToAccountId(),
                         tx.getAmount(),
                         tx.getStatus().name(),
+                        tx.getDescription(),
                         tx.getUpdatedAt()));
     }
 
@@ -71,11 +72,12 @@ public class TransactionService {
     }
 
     @Transactional
-    public TransferEventDTO updateStatus(TransferEventDTO event, Transaction.TransactionStatus status) {
+    public TransferEventDTO updateStatusAndDescription(TransferEventDTO event, Transaction.TransactionStatus status) {
         Transaction tx = transactionRepository.findById(event.transactionId())
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));
 
         tx.setStatus(status);
+        tx.setDescription(event.description() != null ? event.description() : null);
         return TransactionMapper.toDTO(tx);
     }
 }

@@ -16,12 +16,12 @@ public class TransactionConsumer {
 
     @KafkaListener(topics = "transaction.completed", groupId = "transaction-service-group", containerFactory = "kafkaListenerContainerFactory")
     public void consumeTransactionCompleted(TransferEventDTO transaction) {
-        transactionService.updateStatus(transaction, Transaction.TransactionStatus.SUCCESS);
+        transactionService.updateStatusAndDescription(transaction, Transaction.TransactionStatus.SUCCESS);
     }
 
     @KafkaListener(topics = "transaction.failed", groupId = "transaction-service-group", containerFactory = "kafkaListenerContainerFactory")
     public void consumeTransactionFailed(TransferEventDTO transaction) {
-        transactionService.updateStatus(transaction, Transaction.TransactionStatus.FAILED);
+        transactionService.updateStatusAndDescription(transaction, Transaction.TransactionStatus.FAILED);
     }
 
 }
