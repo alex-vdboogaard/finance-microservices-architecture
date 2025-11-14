@@ -3,8 +3,6 @@ package com.finance.accountservice.model;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -35,18 +33,11 @@ public class Account {
     private String accountNumber;
     private Double balance;
 
-    @Enumerated(EnumType.STRING)
     @Builder.Default
-    private AccountStatus status = AccountStatus.ACTIVE;
+    private String status = "ACTIVE";
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
-    public enum AccountStatus {
-        ACTIVE,
-        FROZEN,
-        CLOSED
-    }
 
     @PrePersist
     public void onCreate() {
