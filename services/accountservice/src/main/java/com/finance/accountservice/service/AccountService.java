@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.finance.accountservice.dto.CreateAccountRequest;
+import com.finance.accountservice.exception.AccountNotFoundException;
+import com.finance.accountservice.exception.InvalidAmountException;
 import com.finance.accountservice.exception.UserNotFoundException;
 import com.finance.accountservice.model.Account;
 import com.finance.accountservice.model.User;
@@ -45,9 +47,10 @@ public class AccountService {
     @Transactional
     public Account deposit(Long accountId, Double amount) {
         if (amount == null || amount <= 0) {
-            throw new IllegalArgumentException("Amount must be greater than zero");
+            throw new InvalidAmountException("Amount must be greater than zero");
         }
-        Account account = accountRepository.findById(accountId).orElseThrow();
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new AccountNotFoundException("Account with ID " + accountId + " not found"));
         account.credit(amount);
         return accountRepository.save(account);
     }
