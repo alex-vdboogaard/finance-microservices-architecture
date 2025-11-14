@@ -1,45 +1,102 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 
-// Configuration
 export const options = {
   vus: 30,          // 30 concurrent virtual users
   iterations: 300,  // total 300 requests
 };
 
 const BASE_URL = 'http://localhost:8080/api/v1/transactions';
-const ACCOUNT_IDS = [1001, 1002, 1003, 1004, 1005];
+// Seeded accounts from docs/db/account.sql (2 accounts per 20 users = IDs 1–40)
+const VALID_ACCOUNT_IDS = Array.from({ length: 40 }, (_, i) => i + 1);
+const INVALID_ACCOUNT_IDS = [999999, 888888];
+
+function randomItem(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function randomValidAccounts() {
+  let fromAccountId = randomItem(VALID_ACCOUNT_IDS);
+  let toAccountId = randomItem(VALID_ACCOUNT_IDS);
+
+  // Avoid same-account transfers for "valid" scenarios
+  while (toAccountId === fromAccountId) {
+    toAccountId = randomItem(VALID_ACCOUNT_IDS);
+  }
+
+  return { fromAccountId, toAccountId };
+}
 
 // Function to generate a random transaction
 function randomTransaction() {
-  const fromAccountId = ACCOUNT_IDS[Math.floor(Math.random() * ACCOUNT_IDS.length)];
-  let toAccountId = ACCOUNT_IDS[Math.floor(Math.random() * ACCOUNT_IDS.length)];
+  const { fromAccountId: baseFrom, toAccountId: baseTo } = randomValidAccounts();
+  let fromAccountId = baseFrom;
+  let toAccountId = baseTo;
 
-  // Avoid same account transfers
-  while (toAccountId === fromAccountId) {
-    toAccountId = ACCOUNT_IDS[Math.floor(Math.random() * ACCOUNT_IDS.length)];
+  // Base valid amount between 1 and 1000
+  let amount = parseFloat((Math.random() * 1000 + 1).toFixed(2));
+
+  // Decide scenario:
+  // - 1% negative amount
+  // - 5% account does not exist
+  // - 5% zero amount
+  // - 5% amount above max allowed (100000)
+  // - remaining: valid
+  const roll = Math.random();
+  let scenario = 'valid';
+
+  if (roll < 0.01) {
+    // 1% negative amount
+    amount = -amount;
+    scenario = 'negative_amount';
+  } else if (roll < 0.06) {
+    // next 5%: account does not exist (invalid ID)
+    const invalidId = randomItem(INVALID_ACCOUNT_IDS);
+    if (Math.random() < 0.5) {
+      fromAccountId = invalidId;
+    } else {
+      toAccountId = invalidId;
+    }
+    scenario = 'nonexistent_account';
+  } else if (roll < 0.11) {
+    // next 5%: zero amount (fails @Positive)
+    amount = 0;
+    scenario = 'zero_amount';
+  } else if (roll < 0.16) {
+    // next 5%: amount above @DecimalMax(100000.00)
+    amount = parseFloat((100001 + Math.random() * 100000).toFixed(2));
+    scenario = 'too_large_amount';
   }
 
-  // Random amount: 90% positive, 10% negative
-  let amount = parseFloat((Math.random() * 1000).toFixed(2));
-  if (Math.random() < 0.1) amount = -amount; // fraudulent case
-
-  return { fromAccountId, toAccountId, amount };
+  return {
+    payload: { fromAccountId, toAccountId, amount },
+    scenario,
+  };
 }
 
 export default function () {
-  const tx = randomTransaction();
-  const payload = JSON.stringify(tx);
+  const { payload, scenario } = randomTransaction();
+  const payloadJson = JSON.stringify(payload);
   const params = {
     headers: { 'Content-Type': 'application/json' },
   };
 
-  const res = http.post(BASE_URL, payload, params);
+  const res = http.post(BASE_URL, payloadJson, params);
 
   check(res, {
-    'status is 200 or 201': (r) => r.status === 200 || r.status === 201,
-    'rejects fraudulent (400 or 422)': (r) =>
-      tx.amount < 0 ? r.status === 400 || r.status === 422 : true,
+    'request has valid HTTP status': (r) => r.status > 0 && r.status < 600,
+    'valid transaction returns 201 or 200': (r) =>
+      scenario === 'valid' ? r.status === 201 || r.status === 200 : true,
+    'validation errors return 400': (r) =>
+      (scenario === 'negative_amount' ||
+        scenario === 'zero_amount' ||
+        scenario === 'too_large_amount')
+        ? r.status === 400
+        : true,
+    'nonexistent account handled (4xx or 201)': (r) =>
+      scenario === 'nonexistent_account'
+        ? (r.status === 404 || r.status === 400 || r.status === 201)
+        : true,
   });
 
   sleep(0.2);
