@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.finance.common.dto.TransferEventDTO;
-import com.finance.common.dto.TransferRequestDTO;
+import com.finance.transactionservice.dto.TransferRequestDTO;
 import com.finance.transactionservice.mapper.TransactionMapper;
 import com.finance.transactionservice.model.Transaction;
 import com.finance.transactionservice.model.Transaction.TransactionStatus;

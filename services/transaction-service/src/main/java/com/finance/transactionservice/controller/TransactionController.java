@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.finance.common.dto.ApiResponse;
 import com.finance.common.dto.PageResponse;
 import com.finance.common.dto.TransferEventDTO;
-import com.finance.common.dto.TransferRequestDTO;
 import com.finance.common.logging.LoggingConfig;
+import com.finance.transactionservice.dto.TransferRequestDTO;
 import com.finance.transactionservice.service.TransactionService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
