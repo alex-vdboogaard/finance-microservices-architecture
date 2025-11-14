@@ -5,6 +5,8 @@
 
 package com.finance.transactionservice.service;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,7 @@ public class TransactionService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "transactions", key = "#pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort.toString()")
     public Page<TransferEventDTO> findAll(Pageable pageable) {
         return transactionRepository.findAll(pageable)
                 .map(tx -> new TransferEventDTO(
@@ -43,6 +46,7 @@ public class TransactionService {
     }
 
     @Transactional
+    @CacheEvict(value = "transactions", allEntries = true)
     public TransferEventDTO create(TransferRequestDTO request) {
         // Build initial transaction record
         Transaction transaction = Transaction.builder()
@@ -72,6 +76,7 @@ public class TransactionService {
     }
 
     @Transactional
+    @CacheEvict(value = "transactions", allEntries = true)
     public TransferEventDTO updateStatusAndDescription(TransferEventDTO event, Transaction.TransactionStatus status) {
         Transaction tx = transactionRepository.findById(event.transactionId())
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));

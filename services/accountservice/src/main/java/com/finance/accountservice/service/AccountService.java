@@ -3,6 +3,8 @@ package com.finance.accountservice.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.finance.accountservice.dto.CreateAccountRequest;
@@ -27,10 +29,12 @@ public class AccountService {
         this.userRepository = userRepository;
     }
 
+    @Cacheable(value = "accounts", key = "#pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort.toString()")
     public Page<Account> getAccounts(Pageable pageable) {
         return accountRepository.findAll(pageable);
     }
 
+    @CacheEvict(value = "accounts", allEntries = true)
     public Account create(CreateAccountRequest request) {
         User user = userRepository.findById(request.userId())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
@@ -45,6 +49,7 @@ public class AccountService {
     }
 
     @Transactional
+    @CacheEvict(value = "accounts", allEntries = true)
     public Account deposit(Long accountId, Double amount) {
         if (amount == null || amount <= 0) {
             throw new InvalidAmountException("Amount must be greater than zero");
