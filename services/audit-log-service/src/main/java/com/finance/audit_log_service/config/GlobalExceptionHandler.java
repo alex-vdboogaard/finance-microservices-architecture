@@ -1,37 +1,38 @@
 package com.finance.audit_log_service.config;
 
+import java.net.URI;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import com.finance.common.dto.ErrorResponse;
 
-// This class handles exceptions globally for your controllers
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Handle custom exceptions
     @ExceptionHandler(CustomException.class)
-    public ResponseEntity<Map<String, Object>> handleCustomException(CustomException ex) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", ex.getMessage());
-        body.put("status", HttpStatus.BAD_REQUEST.value());
-        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ErrorResponse> handleCustomException(CustomException ex) {
+        ErrorResponse error = ErrorResponse.builder()
+                .type(URI.create("https://api.finance.com/problems/custom-error"))
+                .title("Bad Request")
+                .status(HttpStatus.BAD_REQUEST.value())
+                .detail(ex.getMessage())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
-    // Handle all other exceptions
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleException(Exception ex) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", "An unexpected error occurred");
-        body.put("details", ex.getMessage());
-        body.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<ErrorResponse> handleException(Exception ex) {
+        ErrorResponse error = ErrorResponse.builder()
+                .type(URI.create("https://api.finance.com/problems/internal-error"))
+                .title("Internal Server Error")
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .detail(ex.getMessage())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 }
-
