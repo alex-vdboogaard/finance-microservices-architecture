@@ -1,4 +1,4 @@
-package com.finance.transactionservice.config;
+package com.finance.transactionservice.exception;
 
 import java.net.URI;
 import java.util.List;
@@ -16,6 +16,18 @@ import jakarta.ws.rs.NotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ErrorResponse> handleBadRequest(BadRequestException ex) {
+        ErrorResponse error = ErrorResponse.builder()
+                .type(URI.create("https://api.finance.com/problems/bad-request"))
+                .title("Bad request")
+                .status(HttpStatus.BAD_REQUEST.value())
+                .detail(ex.getMessage())
+                .build();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
