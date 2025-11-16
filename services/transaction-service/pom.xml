@@ -138,19 +138,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            
-            <!-- Bridges Micrometer tracing APIs to Brave -->
-            <dependency>
-                <groupId>io.micrometer</groupId>
-                <artifactId>micrometer-tracing-bridge-brave</artifactId>
-            </dependency>
-
-            <!-- Publishes distributed traces to Zipkin using Brave -->
-            <dependency>
-                <groupId>io.zipkin.reporter2</groupId>
-                <artifactId>zipkin-reporter-brave</artifactId>
-            </dependency>
-
             <!-- Reuses shared classes from the common module -->
             <dependency>
                 <groupId>com.finance</groupId>

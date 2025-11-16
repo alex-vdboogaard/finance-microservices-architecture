@@ -86,18 +86,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Micrometer tracing (Brave) -->
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-tracing-bridge-brave</artifactId>
-        </dependency>
-
-        <!-- Zipkin reporter (Brave) -->
-        <dependency>
-            <groupId>io.zipkin.reporter2</groupId>
-            <artifactId>zipkin-reporter-brave</artifactId>
-        </dependency>
-
         <!-- Spring Kafka -->
         <dependency>
             <groupId>org.springframework.kafka</groupId>
@@ -142,4 +130,3 @@
     </build>
 
 </project>
-

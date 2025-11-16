@@ -60,17 +60,6 @@
             <version>7.4</version>
         </dependency>
 
-        <!-- Bridges Micrometer tracing APIs to Brave -->
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-tracing-bridge-brave</artifactId>
-        </dependency>
-
-        <!-- Publishes distributed traces to Zipkin using Brave -->
-        <dependency>
-            <groupId>io.zipkin.reporter2</groupId>
-            <artifactId>zipkin-reporter-brave</artifactId>
-        </dependency>
     </dependencies>
 
     <build>

@@ -96,18 +96,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- Bridges Micrometer tracing APIs to Brave -->
-		<dependency>
-			<groupId>io.micrometer</groupId>
-			<artifactId>micrometer-tracing-bridge-brave</artifactId>
-		</dependency>
-
-		<!-- Publishes distributed traces to Zipkin using Brave -->
-		<dependency>
-			<groupId>io.zipkin.reporter2</groupId>
-			<artifactId>zipkin-reporter-brave</artifactId>
-		</dependency>
-
 		<!-- Adds Spring Kafka messaging support -->
 		<dependency>
     		<groupId>org.springframework.kafka</groupId>
