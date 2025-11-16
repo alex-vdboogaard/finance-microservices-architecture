@@ -4,10 +4,11 @@ import java.util.UUID;
 
 import org.slf4j.MDC;
 
-import lombok.extern.slf4j.Slf4j;
+public final class LoggingConfig {
 
-@Slf4j
-public class LoggingConfig {
+    private LoggingConfig() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
     public static void startRequest(String path, String service) {
         MDC.put("requestId", UUID.randomUUID().toString());

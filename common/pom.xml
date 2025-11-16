@@ -23,6 +23,12 @@
     </properties>
 
     <dependencies>
+        <!-- SLF4J API for MDC and logging abstractions -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
         <!-- Exposes the core JWT API for token creation and parsing -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>

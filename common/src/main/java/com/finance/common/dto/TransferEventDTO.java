@@ -1,5 +1,6 @@
 package com.finance.common.dto;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public record TransferEventDTO(
@@ -9,7 +10,7 @@ public record TransferEventDTO(
         Double amount,
         String status,
         String description,
-        LocalDateTime timestamp) {
+        LocalDateTime timestamp) implements Serializable {
 
     public TransferEventDTO(
             String transactionId,
