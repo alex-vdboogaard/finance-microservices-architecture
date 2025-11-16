@@ -47,6 +47,11 @@ spring:
           predicates:
             - Path=/api/v1/accounts/**
 
+        - id: account-service
+          uri: http://account-service:8005
+          predicates:
+            - Path=/api/v1/users/**
+
         - id: audit-log-service
           uri: http://audit-log-service:8001
           predicates:

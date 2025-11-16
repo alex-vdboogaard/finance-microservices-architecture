@@ -1,6 +1,8 @@
 
 package com.finance.accountservice.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -12,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.finance.accountservice.dto.AccountResponse;
 import com.finance.accountservice.dto.CreateAccountRequest;
 import com.finance.accountservice.dto.DepositRequest;
+import com.finance.accountservice.mapper.AccountMapper;
 import com.finance.accountservice.model.Account;
 import com.finance.accountservice.service.AccountService;
 import com.finance.common.dto.ApiResponse;
@@ -35,12 +39,14 @@ public class AccountController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<PageResponse<Account>>> getAccounts(
+    public ResponseEntity<ApiResponse<PageResponse<AccountResponse>>> getAccounts(
             @PageableDefault(size = 10) Pageable pageable) {
         Page<Account> page = accountService.getAccounts(pageable);
 
-        PageResponse<Account> data = PageResponse.<Account>builder()
-                .content(page.getContent())
+        List<AccountResponse> content = AccountMapper.toResponseList(page.getContent());
+
+        PageResponse<AccountResponse> data = PageResponse.<AccountResponse>builder()
+                .content(content)
                 .page(page.getNumber())
                 .size(page.getSize())
                 .totalElements(page.getTotalElements())
@@ -51,8 +57,8 @@ public class AccountController {
                 .hasPrevious(page.hasPrevious())
                 .build();
 
-        ApiResponse<PageResponse<Account>> response = ApiResponse
-                .<PageResponse<Account>>builder()
+        ApiResponse<PageResponse<AccountResponse>> response = ApiResponse
+                .<PageResponse<AccountResponse>>builder()
                 .meta(ApiResponse.Meta.builder().message("Accounts fetched successfully").build())
                 .data(data)
                 .build();
@@ -61,25 +67,32 @@ public class AccountController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Account>> createAccount(@RequestBody @Valid CreateAccountRequest request) {
+    public ResponseEntity<ApiResponse<AccountResponse>> createAccount(
+            @RequestBody @Valid CreateAccountRequest request) {
         Account created = accountService.create(request);
 
-        ApiResponse<Account> response = ApiResponse.<Account>builder()
-                .meta(ApiResponse.Meta.builder().message("Account created successfully").build())
-                .data(created)
+        AccountResponse accountResponse = AccountMapper.toResponse(created);
+
+        ApiResponse<AccountResponse> response = ApiResponse.<AccountResponse>builder()
+                .meta(ApiResponse.Meta.builder()
+                        .message("Account created successfully")
+                        .build())
+                .data(accountResponse)
                 .build();
 
         return ResponseEntity.status(201).body(response);
     }
 
     @PostMapping("/{id}/deposit")
-    public ResponseEntity<ApiResponse<Account>> deposit(
+    public ResponseEntity<ApiResponse<AccountResponse>> deposit(
             @PathVariable("id") Long accountId,
             @RequestBody @Valid DepositRequest request) {
         Account updated = accountService.deposit(accountId, request.amount());
 
-        ApiResponse<Account> response = ApiResponse.<Account>builder()
-                .data(updated)
+        AccountResponse accountResponse = AccountMapper.toResponse(updated);
+
+        ApiResponse<AccountResponse> response = ApiResponse.<AccountResponse>builder()
+                .data(accountResponse)
                 .meta(ApiResponse.Meta.builder()
                         .message("Deposit successful")
                         .build())
