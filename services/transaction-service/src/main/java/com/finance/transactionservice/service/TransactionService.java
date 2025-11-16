@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.finance.common.dto.TransferEventDTO;
 import com.finance.transactionservice.dto.TransferRequestDTO;
+import com.finance.transactionservice.exception.BadRequestException;
 import com.finance.transactionservice.mapper.TransactionMapper;
 import com.finance.transactionservice.model.Transaction;
 import com.finance.transactionservice.model.Transaction.TransactionStatus;
@@ -48,6 +49,9 @@ public class TransactionService {
     @Transactional
     @CacheEvict(value = "transactions", allEntries = true)
     public TransferEventDTO create(TransferRequestDTO request) {
+        if (request.fromAccountId().equals(request.toAccountId())) {
+            throw new BadRequestException("Transfer accounts cannot be the same");
+        }
         // Build initial transaction record
         Transaction transaction = Transaction.builder()
                 .transactionId(java.util.UUID.randomUUID().toString())
