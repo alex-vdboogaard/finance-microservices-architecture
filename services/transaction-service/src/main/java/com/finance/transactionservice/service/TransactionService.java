@@ -37,7 +37,7 @@ public class TransactionService {
     public Page<TransferEventDTO> findAll(Pageable pageable) {
         return transactionRepository.findAll(pageable)
                 .map(tx -> new TransferEventDTO(
-                        tx.getTransactionId(),
+                        tx.getId(),
                         tx.getFromAccountId(),
                         tx.getToAccountId(),
                         tx.getAmount(),
@@ -54,7 +54,6 @@ public class TransactionService {
         }
         // Build initial transaction record
         Transaction transaction = Transaction.builder()
-                .transactionId(java.util.UUID.randomUUID().toString())
                 .fromAccountId(request.fromAccountId())
                 .toAccountId(request.toAccountId())
                 .amount(request.amount())
@@ -66,7 +65,7 @@ public class TransactionService {
 
         // Convert to TransferEventDTO for Kafka
         TransferEventDTO event = new TransferEventDTO(
-                saved.getTransactionId(),
+                saved.getId(),
                 saved.getFromAccountId(),
                 saved.getToAccountId(),
                 saved.getAmount(),

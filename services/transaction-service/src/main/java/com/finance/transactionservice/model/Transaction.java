@@ -26,8 +26,6 @@ public class Transaction {
     @Id
     @Builder.Default
     private String id = UUID.randomUUID().toString();
-
-    private String transactionId;
     private Long fromAccountId;
     private Long toAccountId;
     private Double amount;

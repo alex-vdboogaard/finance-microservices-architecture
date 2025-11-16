@@ -1,14 +1,15 @@
 package com.finance.transactionservice.mapper;
 
+import java.time.LocalDateTime;
+
 import com.finance.common.dto.TransferEventDTO;
 import com.finance.transactionservice.model.Transaction;
-import java.time.LocalDateTime;
 
 public class TransactionMapper {
 
     public static Transaction toEntity(TransferEventDTO dto) {
         return Transaction.builder()
-                .transactionId(dto.transactionId())
+                .id(dto.transactionId())
                 .fromAccountId(dto.fromAccountId())
                 .toAccountId(dto.toAccountId())
                 .amount(dto.amount())
@@ -20,7 +21,7 @@ public class TransactionMapper {
 
     public static TransferEventDTO toDTO(Transaction entity) {
         return new TransferEventDTO(
-                entity.getTransactionId(),
+                entity.getId(),
                 entity.getFromAccountId(),
                 entity.getToAccountId(),
                 entity.getAmount(),
