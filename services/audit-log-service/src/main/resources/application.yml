@@ -4,8 +4,8 @@ server:
 logging:
   level:
     root: INFO
-    org.apache.kafka: WARN
-    org.springframework.kafka: WARN
+    "[org.apache.kafka]": WARN
+    "[org.springframework.kafka]": WARN
 
 spring:
   application:
