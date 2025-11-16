@@ -16,7 +16,7 @@ spring:
       default-filters:
         - name: RequestRateLimiter
           args:
-            "[redis-rate-limiter.replenishRate]": 1000     # 5 requests per second
+            "[redis-rate-limiter.replenishRate]": 1000     # 1000 requests per second
             "[redis-rate-limiter.burstCapacity]": 2000    # allow short bursts up to 10
             key-resolver: "#{@ipKeyResolver}"
 

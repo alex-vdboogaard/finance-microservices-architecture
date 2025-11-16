@@ -4,6 +4,8 @@ server:
 logging:
   level:
     root: INFO
+    "[org.apache.kafka]": WARN
+    "[org.springframework.kafka]": WARN
 
 spring:
   application:
@@ -61,4 +63,3 @@ management:
   metrics:
     tags:
       application: ${spring.application.name}
-

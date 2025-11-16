@@ -39,6 +39,8 @@ server:
 logging:
   level:
     root: INFO
+    org.apache.kafka: WARN
+    org.springframework.kafka: WARN
 
 management:
   endpoints:
