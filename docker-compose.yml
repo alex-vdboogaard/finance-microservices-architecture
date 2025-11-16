@@ -46,7 +46,7 @@ services:
     ports:
       - "8001:8001"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/audit_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-audit-log:3306/audit_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: password
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
@@ -157,6 +157,9 @@ services:
       MYSQL_DATABASE: audit_db
     ports:
       - "3307:3306" # host 3307 → container 3306
+    volumes:
+      - ./docker-data/mysql-audit-data:/var/lib/mysql
+      - ./docker-data/mysql-audit-init:/docker-entrypoint-initdb.d
 
   # MySQL database for the notification-service.
   mysql-notification:
@@ -168,6 +171,9 @@ services:
       MYSQL_DATABASE: notification_db
     ports:
       - "3308:3306" # host 3308 → container 3306
+    volumes:
+      - ./docker-data/mysql-notification-data:/var/lib/mysql
+      - ./docker-data/mysql-notification-init:/docker-entrypoint-initdb.d
 
   # Notification service. Consumes transaction events and persists notifications; registers with Eureka.
   notification-service:
@@ -200,6 +206,9 @@ services:
       POSTGRES_DB: transaction_db
     ports:
       - "5432:5432"
+    volumes:
+      - ./docker-data/postgres:/var/lib/postgresql/data
+      - ./docker-data/postgres-init:/docker-entrypoint-initdb.d
 
   # Prometheus metrics. Scrapes services and exposes metrics for Grafana dashboards.
   prometheus:
