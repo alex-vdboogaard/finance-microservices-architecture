@@ -15,7 +15,7 @@ pom.xml.releaseBackup
 pom.xml.versionsBackup
 
 *.md
-
+build
 # Spring Boot logs and PID files
 *.log
 *.pid

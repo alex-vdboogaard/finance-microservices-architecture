@@ -3,8 +3,10 @@ import { NavLink } from 'react-router-dom';
 import { cn } from './ui/utils';
 
 const navigationLinks = [
-  { label: 'Dashboard', to: '/' },
-  { label: 'Transactions', to: '/transactions' },
+  { label: 'Transactions', to: '/' },
+  { label: 'Accounts', to: '/accounts' },
+  { label: 'Users', to: '/users' },
+  { label: 'Notifications', to: '/notifications' },
   { label: 'Audit Log', to: '/audit-log' }
 ];
 
@@ -24,7 +26,9 @@ export function Navigation() {
           </span>
           <div>
             <p className="text-lg font-semibold tracking-tight">Finance Platform</p>
-            <p className="text-sm text-muted-foreground">Monitor transactions and audit activity</p>
+            <p className="text-sm text-muted-foreground">
+              Monitor transactions, accounts, users, and notifications
+            </p>
           </div>
         </div>
 
