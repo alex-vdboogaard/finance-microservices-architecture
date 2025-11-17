@@ -22,9 +22,12 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    properties:
-      "[spring.json.trusted.packages]": "*"
-      "[spring.json.add.type.headers]": false
+    consumer:
+      group-id: transaction-service-consumer
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    listener:
+      missing-topics-fatal: false
 
 eureka:
   client:
