@@ -1,5 +1,6 @@
 package com.finance.accountservice.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
@@ -20,7 +21,9 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Account {
+public class Account implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
