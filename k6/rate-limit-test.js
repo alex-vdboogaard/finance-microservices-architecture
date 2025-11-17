@@ -4,11 +4,18 @@ import { Counter } from 'k6/metrics';
 
 const BASE_URL = 'http://localhost:8080/api/v1/logs';
 
+// From api-gateway/src/main/resources/application.yml
+// redis-rate-limiter.replenishRate: 1000 req/s
+// redis-rate-limiter.burstCapacity: 2000
+const REPLENISH_RATE = 1000;
+
 export const options = {
   stages: [
-    { duration: '2s', target: 100 },  // ramp up to 100 users
-    { duration: '2s', target: 100 }, // hold
-    { duration: '1s', target: 0 },    // ramp down
+    // ~20 iterations/s per VU with sleep(0.05)
+    // 50 VUs * 20 req/s ≈ 1000 req/s (matches gateway rate limit)
+    { duration: '5s', target: REPLENISH_RATE / 20 }, // ramp up to target VUs
+    { duration: '10s', target: REPLENISH_RATE / 20 }, // hold at ~rate limit
+    { duration: '5s', target: 0 }, // ramp down
   ],
 };
 

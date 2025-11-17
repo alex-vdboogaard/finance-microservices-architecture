@@ -1,12 +1,8 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 
-export const options = {
-  vus: 30,          // 30 concurrent virtual users
-  iterations: 300,  // total 300 requests
-};
+export const BASE_URL = 'http://localhost:8080/api/v1/transactions';
 
-const BASE_URL = 'http://localhost:8080/api/v1/transactions';
 // Seeded accounts from docs/db/account.sql (2 accounts per 20 users = IDs 1–40)
 const VALID_ACCOUNT_IDS = Array.from({ length: 40 }, (_, i) => i + 1);
 const INVALID_ACCOUNT_IDS = [999999, 888888];
@@ -28,7 +24,7 @@ function randomValidAccounts() {
 }
 
 // Function to generate a random transaction
-function randomTransaction() {
+export function randomTransaction() {
   const { fromAccountId: baseFrom, toAccountId: baseTo } = randomValidAccounts();
   let fromAccountId = baseFrom;
   let toAccountId = baseTo;
@@ -46,11 +42,9 @@ function randomTransaction() {
   let scenario = 'valid';
 
   if (roll < 0.01) {
-    // 1% negative amount
     amount = -amount;
     scenario = 'negative_amount';
   } else if (roll < 0.06) {
-    // next 5%: account does not exist (invalid ID)
     const invalidId = randomItem(INVALID_ACCOUNT_IDS);
     if (Math.random() < 0.5) {
       fromAccountId = invalidId;
@@ -59,11 +53,9 @@ function randomTransaction() {
     }
     scenario = 'nonexistent_account';
   } else if (roll < 0.11) {
-    // next 5%: zero amount (fails @Positive)
     amount = 0;
     scenario = 'zero_amount';
   } else if (roll < 0.16) {
-    // next 5%: amount above @DecimalMax(100000.00)
     amount = parseFloat((100001 + Math.random() * 100000).toFixed(2));
     scenario = 'too_large_amount';
   }
@@ -74,7 +66,7 @@ function randomTransaction() {
   };
 }
 
-export default function () {
+export function runTransactionScenario() {
   const { payload, scenario } = randomTransaction();
   const payloadJson = JSON.stringify(payload);
   const params = {
@@ -101,3 +93,4 @@ export default function () {
 
   sleep(0.2);
 }
+
