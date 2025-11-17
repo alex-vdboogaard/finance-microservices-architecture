@@ -1,6 +1,6 @@
 ## Finance Microservices — Personal Project Case Study
 
-This is a personal portfolio project where I designed and built an event‑driven microservices system that simulates inter‑account transfers, end‑to‑end audit logging, and API gateway routing with rate limiting. It runs locally with Docker Compose and showcases how I think about service boundaries, asynchronous workflows, observability, and developer ergonomics.
+This is a personal portfolio project where I built a microservices-based backend system that simulates inter-account money transfers at scale, reflecting the architecture of modern digital banking infrastructure. The project emphasises scalability, fault tolerance, and event-driven communication using Java Spring Boot and supporting technologies.
 
 
 **Demo Video**
