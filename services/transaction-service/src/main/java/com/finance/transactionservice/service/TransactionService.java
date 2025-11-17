@@ -86,6 +86,7 @@ public class TransactionService {
 
         tx.setStatus(status);
         tx.setDescription(event.description() != null ? event.description() : null);
+        transactionRepository.save(tx);
         return TransactionMapper.toDTO(tx);
     }
 }
