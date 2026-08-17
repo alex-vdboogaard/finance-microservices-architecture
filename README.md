@@ -17,7 +17,7 @@ The system focuses on scalability, fault tolerance, asynchronous communication, 
 ![Transaction flow](assets/transaction%20flow.png)  
 ![Metrics](assets/grafana%20cpu%20usage.png)
 ![k6 Test](assets/k6%20test.png)  
-![Kafka UI](assets/kafka%20ui.png)  
+![Kafka UI](assets/kafka%20ui.png)
 
 ---
 
@@ -102,4 +102,10 @@ Testing at that volume was avoided for the sake of the laptop’s survival.
 
 ```bash
 docker-compose up --build
+```
+
+### Without Monitoring/Observability
+
+```bash
+docker compose up -d account-service api-gateway audit-log-service eureka-server frontend kafka kafka-ui mysql-audit-log mysql-notification notification-service postgres redis transaction-service zookeeper`
 ```
