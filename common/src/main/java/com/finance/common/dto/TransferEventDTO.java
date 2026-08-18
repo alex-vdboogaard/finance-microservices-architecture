@@ -3,6 +3,9 @@ package com.finance.common.dto;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown=true)
 public record TransferEventDTO(
         String transactionId,
         Long fromAccountId,
