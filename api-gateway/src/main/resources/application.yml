@@ -16,8 +16,8 @@ spring:
       default-filters:
         - name: RequestRateLimiter
           args:
-            "[redis-rate-limiter.replenishRate]": 1000     # 1000 requests per second
-            "[redis-rate-limiter.burstCapacity]": 2000    # allow short bursts up to 10
+            "[redis-rate-limiter.replenishRate]": 1000 # 1000 requests per second
+            "[redis-rate-limiter.burstCapacity]": 2000 # allow short bursts up to 10
             key-resolver: "#{@ipKeyResolver}"
 
         - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
@@ -25,7 +25,7 @@ spring:
       globalcors:
         add-to-simple-url-handler-mapping: true
         cors-configurations:
-          '[/**]':
+          "[/**]":
             allowedOrigins:
               - "http://localhost:5173"
               - "http://127.0.0.1:5173"
@@ -91,6 +91,6 @@ eureka:
   client:
     registry-fetch-interval-seconds: 5
     service-url:
-      defaultZone: http://eureka-server:8761/eureka/
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka/}
     register-with-eureka: true
     fetch-registry: true
