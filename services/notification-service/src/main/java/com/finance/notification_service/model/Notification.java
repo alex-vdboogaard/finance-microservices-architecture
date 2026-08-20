@@ -14,7 +14,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "notification")
+@Table(name = "notification", indexes = @jakarta.persistence.Index(name = "idx_notification_user_id", columnList = "user_id"))
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,10 +24,13 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
+    @Column(nullable = false)
     private String title;
 
+    @Column(nullable = true)
     private String description;
 
     @Column(name = "timestamp")

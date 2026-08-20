@@ -150,7 +150,7 @@ services:
 
   # MySQL database for the audit-log-service.
   mysql-audit-log:
-    image: mysql:8
+    image: mysql:8.0
     container_name: mysql-audit-log
     restart: always
     environment:
@@ -164,7 +164,7 @@ services:
 
   # MySQL database for the notification-service.
   mysql-notification:
-    image: mysql:8
+    image: mysql:8.0
     container_name: mysql-notification
     restart: always
     environment:
