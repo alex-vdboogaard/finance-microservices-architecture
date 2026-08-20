@@ -17,10 +17,12 @@ services:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     depends_on:
       - postgres
       - eureka-server
       - kafka
+      - zipkin
 
   # API Gateway (Spring Cloud Gateway). Routes external requests to backend services via Eureka discovery.
   api-gateway:
@@ -33,8 +35,10 @@ services:
       - "8080:8080"
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     depends_on:
       - eureka-server
+      - zipkin
 
   # Audit logging service. Persists audit events to MySQL; registers with Eureka.
   audit-log-service:
@@ -51,9 +55,11 @@ services:
       SPRING_DATASOURCE_PASSWORD: password
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     depends_on:
       - mysql-audit-log
       - eureka-server
+      - zipkin
 
   # Service registry (Netflix Eureka). Enables service discovery for the microservices.
   eureka-server:
@@ -191,10 +197,12 @@ services:
       SPRING_DATASOURCE_PASSWORD: password
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     depends_on:
       - mysql-notification
       - eureka-server
       - kafka
+      - zipkin
 
   # PostgreSQL database. Stores transactional data (accounts, transactions).
   postgres:
@@ -262,10 +270,12 @@ services:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     depends_on:
       - postgres
       - eureka-server
       - kafka
+      - zipkin
 
   # Zookeeper. Coordinates Kafka broker.
   zookeeper:
@@ -280,3 +290,11 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+
+  # Distributed Tracing collector and visualization UI (Zipkin)
+  zipkin:
+    image: openzipkin/zipkin:latest
+    container_name: zipkin
+    restart: always
+    ports:
+      - "9411:9411"

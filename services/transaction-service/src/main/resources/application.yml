@@ -19,6 +19,8 @@ spring:
 
   kafka:
     bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    template:
+      observation-enabled: true
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
@@ -26,7 +28,12 @@ spring:
       group-id: transaction-service-consumer
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        "[spring.json.trusted.packages]": "*"
+        "[spring.json.value.default.type]": "com.finance.common.dto.TransferEventDTO"
     listener:
+      observation-enabled: true
       missing-topics-fatal: false
 
 eureka:
@@ -42,6 +49,8 @@ server:
   port: 8003
 
 logging:
+  pattern:
+    level: "%5p [%X{traceId:-},%X{spanId:-}]"
   level:
     root: INFO
     org.apache.kafka: WARN
@@ -59,3 +68,11 @@ management:
   metrics:
     tags:
       application: ${spring.application.name}
+  tracing:
+    sampling:
+      probability: 1.0
+    propagation:
+      type: b3,w3c
+  zipkin:
+    tracing:
+      endpoint: ${MANAGEMENT_ZIPKIN_TRACING_ENDPOINT:http://localhost:9411/api/v2/spans}

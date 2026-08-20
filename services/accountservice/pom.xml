@@ -66,6 +66,21 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- Distributed Tracing with Micrometer and Zipkin -->
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-tracing-bridge-brave</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.zipkin.reporter2</groupId>
+			<artifactId>zipkin-reporter-brave</artifactId>
+		</dependency>
+		<!-- Brave instrumentation for Kafka trace context propagation -->
+		<dependency>
+			<groupId>io.zipkin.brave</groupId>
+			<artifactId>brave-instrumentation-kafka-clients</artifactId>
+		</dependency>
+
 		<!-- Generates interactive OpenAPI documentation -->
         <dependency>
             <groupId>org.springdoc</groupId>
