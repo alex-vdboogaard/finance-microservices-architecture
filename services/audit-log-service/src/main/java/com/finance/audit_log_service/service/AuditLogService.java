@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.finance.audit_log_service.dto.AuditLogResponse;
 import com.finance.audit_log_service.dto.CreateAuditLogRequest;
@@ -21,6 +22,7 @@ public class AuditLogService {
         return auditLogRepository.findAll();
     }
 
+    @Transactional
     public AuditLogResponse createAuditLog(CreateAuditLogRequest auditLog) {
         AuditLog log = new AuditLog();
         

@@ -13,7 +13,7 @@ spring:
   application:
     name: audit-log-service
   datasource:
-    url: jdbc:mysql://localhost:3306/audit_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/audit_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
     username: root
     password: password
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -86,6 +86,9 @@ management:
 
 jdbc:
   includes:
+    - connection
     - query
+  datasource-proxy:
+    include-parameter-values: true
 
 

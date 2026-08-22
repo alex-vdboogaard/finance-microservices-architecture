@@ -79,6 +79,9 @@ management:
 
 jdbc:
   includes:
+    - connection
     - query
+  datasource-proxy:
+    include-parameter-values: true
 
 

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.finance.notification_service.dto.CreateNotificationRequest;
 import com.finance.notification_service.dto.NotificationResponse;
@@ -24,6 +25,7 @@ public class NotificationService {
         return repository.findByUserId(userId);
     }
 
+    @Transactional
     public NotificationResponse createNotification(CreateNotificationRequest request) {
         Notification entity = new Notification();
         entity.setUserId(request.userId());
