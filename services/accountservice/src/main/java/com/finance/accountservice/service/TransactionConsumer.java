@@ -15,7 +15,7 @@ public class TransactionConsumer {
         this.producer = producer;
     }
 
-    @KafkaListener(topics = "transaction.initiated", groupId = "account-service-group", containerFactory = "kafkaListenerContainerFactory")
+    @KafkaListener(id = "account-transaction-initiated-listener", topics = "transaction.initiated", groupId = "account-service-group", containerFactory = "kafkaListenerContainerFactory")
     public void consumeTransactionInitiated(TransferEventDTO t) {
         TransferEventDTO transfer = accountService.transferMoney(t);
         if ("SUCCESS".equals(transfer.status())) {

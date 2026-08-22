@@ -14,19 +14,19 @@ public class TransactionConsumer {
         this.auditLogService = auditLogService;
     }
 
-    @KafkaListener(topics = "${app.kafka.topics.transaction-initiated}", groupId = "audit-log-group", containerFactory = "kafkaListenerContainerFactory")
+    @KafkaListener(id = "audit-log-transaction-initiated-listener", topics = "${app.kafka.topics.transaction-initiated}", groupId = "audit-log-group", containerFactory = "kafkaListenerContainerFactory")
     public void consumeTransactionInitiated(TransferEventDTO transaction) {
         CreateAuditLogRequest log = new CreateAuditLogRequest("New transfer initiated: " + transaction.toString());
         auditLogService.createAuditLog(log);
     }
 
-    @KafkaListener(topics = "${app.kafka.topics.transaction-completed}", groupId = "audit-log-group", containerFactory = "kafkaListenerContainerFactory")
+    @KafkaListener(id = "audit-log-transaction-completed-listener", topics = "${app.kafka.topics.transaction-completed}", groupId = "audit-log-group", containerFactory = "kafkaListenerContainerFactory")
     public void consumeTransactionCompleted(TransferEventDTO transaction) {
         CreateAuditLogRequest log = new CreateAuditLogRequest("Transfer completed: " + transaction.toString());
         auditLogService.createAuditLog(log);
     }
 
-    @KafkaListener(topics = "${app.kafka.topics.transaction-failed}", groupId = "audit-log-group", containerFactory = "kafkaListenerContainerFactory")
+    @KafkaListener(id = "audit-log-transaction-failed-listener", topics = "${app.kafka.topics.transaction-failed}", groupId = "audit-log-group", containerFactory = "kafkaListenerContainerFactory")
     public void consumeTransactionFailed(TransferEventDTO transaction) {
         CreateAuditLogRequest log = new CreateAuditLogRequest("Transfer failed: " + transaction.toString());
         auditLogService.createAuditLog(log);

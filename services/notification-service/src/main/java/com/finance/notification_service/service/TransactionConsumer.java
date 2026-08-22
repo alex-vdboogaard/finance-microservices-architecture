@@ -14,7 +14,7 @@ public class TransactionConsumer {
         this.notificationService = notificationService;
     }
 
-    @KafkaListener(topics = "${app.kafka.topics.transaction-completed}", groupId = "notification-group", containerFactory = "kafkaListenerContainerFactory")
+    @KafkaListener(id = "notification-transaction-completed-listener", topics = "${app.kafka.topics.transaction-completed}", groupId = "notification-group", containerFactory = "kafkaListenerContainerFactory")
     public void consumeTransactionCompleted(TransferEventDTO transaction) {
         String title = "Transaction Completed";
         String description = transaction.description();
@@ -22,7 +22,7 @@ public class TransactionConsumer {
         notificationService.createNotification(new CreateNotificationRequest(userId, title, description));
     }
 
-    @KafkaListener(topics = "${app.kafka.topics.transaction-failed}", groupId = "notification-group", containerFactory = "kafkaListenerContainerFactory")
+    @KafkaListener(id = "notification-transaction-failed-listener", topics = "${app.kafka.topics.transaction-failed}", groupId = "notification-group", containerFactory = "kafkaListenerContainerFactory")
     public void consumeTransactionFailed(TransferEventDTO transaction) {
         String title = "Transaction Failed";
         String description = "Transfer failed: " + transaction.description();

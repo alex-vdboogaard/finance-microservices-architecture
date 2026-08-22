@@ -14,12 +14,12 @@ public class TransactionConsumer {
         this.transactionService = transactionService;
     }
 
-    @KafkaListener(topics = "transaction.completed", groupId = "transaction-service-group", containerFactory = "kafkaListenerContainerFactory")
+    @KafkaListener(id = "transaction-completed-listener", topics = "transaction.completed", groupId = "transaction-service-group", containerFactory = "kafkaListenerContainerFactory")
     public void consumeTransactionCompleted(TransferEventDTO transaction) {
         transactionService.updateStatusAndDescription(transaction, Transaction.TransactionStatus.SUCCESS);
     }
 
-    @KafkaListener(topics = "transaction.failed", groupId = "transaction-service-group", containerFactory = "kafkaListenerContainerFactory")
+    @KafkaListener(id = "transaction-failed-listener", topics = "transaction.failed", groupId = "transaction-service-group", containerFactory = "kafkaListenerContainerFactory")
     public void consumeTransactionFailed(TransferEventDTO transaction) {
         transactionService.updateStatusAndDescription(transaction, Transaction.TransactionStatus.FAILED);
     }
