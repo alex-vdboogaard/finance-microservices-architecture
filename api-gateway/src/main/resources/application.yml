@@ -43,27 +43,27 @@ spring:
 
       routes:
         - id: account-service
-          uri: http://account-service:8005
+          uri: lb://account-service
           predicates:
             - Path=/api/v1/accounts/**
 
-        - id: account-service
-          uri: http://account-service:8005
+        - id: user-service
+          uri: lb://account-service
           predicates:
             - Path=/api/v1/users/**
 
         - id: audit-log-service
-          uri: http://audit-log-service:8001
+          uri: lb://audit-log-service
           predicates:
             - Path=/api/v1/logs/**
 
         - id: notification-service
-          uri: http://notification-service:8007
+          uri: lb://notification-service
           predicates:
             - Path=/api/v1/notifications/**
 
         - id: transaction-service
-          uri: http://transaction-service:8003
+          uri: lb://transaction-service
           predicates:
             - Path=/api/v1/transactions/**
 
@@ -76,7 +76,7 @@ spring:
               args:
                 "[redis-rate-limiter.replenishRate]": 5
                 "[redis-rate-limiter.burstCapacity]": 10
-                key-resolver: "#{@ipKeyResolver}"
+                key-resolver: "'#{@ipKeyResolver}'"
 
 management:
   endpoints:

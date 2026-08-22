@@ -71,6 +71,12 @@
 			<groupId>io.zipkin.brave</groupId>
 			<artifactId>brave-instrumentation-kafka-clients</artifactId>
 		</dependency>
+		<!-- JDBC / Database Tracing and Observation -->
+		<dependency>
+			<groupId>net.ttddyy.observation</groupId>
+			<artifactId>datasource-micrometer-spring-boot</artifactId>
+			<version>1.0.6</version>
+		</dependency>
 
 		<!-- Provides Spring Data JPA support -->
 		<dependency>
