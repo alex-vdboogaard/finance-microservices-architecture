@@ -14,6 +14,8 @@ public class TransactionConsumer {
         this.notificationService = notificationService;
     }
 
+
+    //TODO: add new notification for the receiver of the transaction
     @KafkaListener(id = "notification-transaction-completed-listener", topics = "${app.kafka.topics.transaction-completed}", groupId = "notification-group", containerFactory = "kafkaListenerContainerFactory")
     public void consumeTransactionCompleted(TransferEventDTO transaction) {
         String title = "Transaction Completed";
