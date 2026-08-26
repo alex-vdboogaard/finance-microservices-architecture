@@ -29,8 +29,8 @@ services:
   # API Gateway (Spring Cloud Gateway). Routes external requests to backend services via Eureka discovery.
   api-gateway:
     build:
-      context: ./api-gateway
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: api-gateway/Dockerfile
     container_name: api-gateway
     restart: always
     ports:
@@ -70,8 +70,8 @@ services:
   # Service registry (Netflix Eureka). Enables service discovery for the microservices.
   eureka-server:
     build:
-      context: ./eureka-server
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: eureka-server/Dockerfile
     container_name: eureka-server
     restart: always
     ports:
