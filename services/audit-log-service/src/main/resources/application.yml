@@ -43,8 +43,9 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
+        "[spring.json.use.type.headers]": false
         "[spring.json.trusted.packages]": "*"
-        "[spring.json.value.default.type]": "com.finance.common.dto.TransferEventDTO"
+        "[spring.json.value.default.type]": "com.finance.audit_log_service.dto.event.AuditEvent"
     listener:
       observation-enabled: true
       missing-topics-fatal: false

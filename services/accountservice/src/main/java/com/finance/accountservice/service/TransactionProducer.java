@@ -3,7 +3,7 @@ package com.finance.accountservice.service;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import com.finance.common.dto.TransferEventDTO;
+import com.finance.accountservice.dto.event.TransferEvent;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,25 +11,25 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class TransactionProducer {
 
-        private final KafkaTemplate<String, TransferEventDTO> kafkaTemplate;
+        private final KafkaTemplate<String, TransferEvent> kafkaTemplate;
 
         // Topic names
         private final String transactionCompletedTopic = "transaction.completed";
         private final String transactionFailedTopic = "transaction.failed";
 
-        public TransactionProducer(KafkaTemplate<String, TransferEventDTO> kafkaTemplate) {
+        public TransactionProducer(KafkaTemplate<String, TransferEvent> kafkaTemplate) {
                 this.kafkaTemplate = kafkaTemplate;
         }
 
-        public void sendTransactionCompleted(TransferEventDTO event) {
+        public void sendTransactionCompleted(TransferEvent event) {
                 publishEvent(transactionCompletedTopic, "completed", event);
         }
 
-        public void sendTransactionFailed(TransferEventDTO event) {
+        public void sendTransactionFailed(TransferEvent event) {
                 publishEvent(transactionFailedTopic, "failed", event);
         }
 
-        private void publishEvent(String topic, String label, TransferEventDTO event) {
+        private void publishEvent(String topic, String label, TransferEvent event) {
                 log.info("Publishing {} transaction event: transactionId={}, topic={}",
                                 label, event.transactionId(), topic);
 
@@ -42,8 +42,9 @@ public class TransactionProducer {
                                                 result.getRecordMetadata().offset()))
                                 .exceptionally(ex -> {
                                         log.error("Failed to publish transactionId={} to topic={}",
-                                                        event.transactionId(), topic, ex);
+                                                         event.transactionId(), topic, ex);
                                         return null;
                                 });
         }
 }
+

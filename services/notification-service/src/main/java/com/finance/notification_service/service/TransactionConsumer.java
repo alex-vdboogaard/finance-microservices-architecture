@@ -3,8 +3,8 @@ package com.finance.notification_service.service;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-import com.finance.common.dto.TransferEventDTO;
 import com.finance.notification_service.dto.CreateNotificationRequest;
+import com.finance.notification_service.dto.event.TransferNotificationEvent;
 
 @Service
 public class TransactionConsumer {
@@ -17,7 +17,7 @@ public class TransactionConsumer {
 
     //TODO: add new notification for the receiver of the transaction
     @KafkaListener(id = "notification-transaction-completed-listener", topics = "${app.kafka.topics.transaction-completed}", groupId = "notification-group", containerFactory = "kafkaListenerContainerFactory")
-    public void consumeTransactionCompleted(TransferEventDTO transaction) {
+    public void consumeTransactionCompleted(TransferNotificationEvent transaction) {
         String title = "Transaction Completed";
         String description = transaction.description();
         Long userId = transaction.fromAccountId();
@@ -25,10 +25,11 @@ public class TransactionConsumer {
     }
 
     @KafkaListener(id = "notification-transaction-failed-listener", topics = "${app.kafka.topics.transaction-failed}", groupId = "notification-group", containerFactory = "kafkaListenerContainerFactory")
-    public void consumeTransactionFailed(TransferEventDTO transaction) {
+    public void consumeTransactionFailed(TransferNotificationEvent transaction) {
         String title = "Transaction Failed";
         String description = "Transfer failed: " + transaction.description();
         Long userId = transaction.fromAccountId();
         notificationService.createNotification(new CreateNotificationRequest(userId, title, description));
     }
 }
+

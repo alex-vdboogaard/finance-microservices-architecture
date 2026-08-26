@@ -3,7 +3,7 @@ package com.finance.accountservice.service;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-import com.finance.common.dto.TransferEventDTO;
+import com.finance.accountservice.dto.event.TransferEvent;
 
 @Service
 public class TransactionConsumer {
@@ -16,8 +16,8 @@ public class TransactionConsumer {
     }
 
     @KafkaListener(id = "account-transaction-initiated-listener", topics = "transaction.initiated", groupId = "account-service-group", containerFactory = "kafkaListenerContainerFactory")
-    public void consumeTransactionInitiated(TransferEventDTO t) {
-        TransferEventDTO transfer = accountService.transferMoney(t);
+    public void consumeTransactionInitiated(TransferEvent t) {
+        TransferEvent transfer = accountService.transferMoney(t);
         if ("SUCCESS".equals(transfer.status())) {
             producer.sendTransactionCompleted(transfer);
         } else {
@@ -26,3 +26,4 @@ public class TransactionConsumer {
     }
 
 }
+

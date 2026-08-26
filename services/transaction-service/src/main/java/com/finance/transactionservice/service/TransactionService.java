@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package com.finance.transactionservice.service;
 
 import org.springframework.cache.annotation.CacheEvict;
@@ -12,8 +7,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.finance.common.dto.TransferEventDTO;
+import com.finance.transactionservice.dto.TransactionResponseDTO;
 import com.finance.transactionservice.dto.TransferRequestDTO;
+import com.finance.transactionservice.dto.event.TransferEvent;
 import com.finance.transactionservice.exception.BadRequestException;
 import com.finance.transactionservice.mapper.TransactionMapper;
 import com.finance.transactionservice.model.Transaction;
@@ -34,21 +30,14 @@ public class TransactionService {
 
     @Transactional(readOnly = true)
     @Cacheable(value = "transactions", key = "#pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort.toString()")
-    public Page<TransferEventDTO> findAll(Pageable pageable) {
+    public Page<TransactionResponseDTO> findAll(Pageable pageable) {
         return transactionRepository.findAll(pageable)
-                .map(tx -> new TransferEventDTO(
-                        tx.getId(),
-                        tx.getFromAccountId(),
-                        tx.getToAccountId(),
-                        tx.getAmount(),
-                        tx.getStatus().name(),
-                        tx.getDescription(),
-                        tx.getUpdatedAt()));
+                .map(TransactionMapper::toResponseDTO);
     }
 
     @Transactional
     @CacheEvict(value = "transactions", allEntries = true)
-    public TransferEventDTO create(TransferRequestDTO request) {
+    public TransactionResponseDTO create(TransferRequestDTO request) {
         if (request.fromAccountId().equals(request.toAccountId())) {
             throw new BadRequestException("Transfer accounts cannot be the same");
         }
@@ -63,8 +52,8 @@ public class TransactionService {
         // Save to database
         Transaction saved = transactionRepository.save(transaction);
 
-        // Convert to TransferEventDTO for Kafka
-        TransferEventDTO event = new TransferEventDTO(
+        // Convert to TransferEvent for Kafka
+        TransferEvent event = new TransferEvent(
                 saved.getId(),
                 saved.getFromAccountId(),
                 saved.getToAccountId(),
@@ -75,18 +64,19 @@ public class TransactionService {
         // Publish to Kafka
         producer.sendTransactionInitiated(event);
 
-        return event;
+        return TransactionMapper.toResponseDTO(saved);
     }
 
     @Transactional
     @CacheEvict(value = "transactions", allEntries = true)
-    public TransferEventDTO updateStatusAndDescription(TransferEventDTO event, Transaction.TransactionStatus status) {
+    public TransactionResponseDTO updateStatusAndDescription(TransferEvent event, Transaction.TransactionStatus status) {
         Transaction tx = transactionRepository.findById(event.transactionId())
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));
 
         tx.setStatus(status);
         tx.setDescription(event.description() != null ? event.description() : null);
         transactionRepository.save(tx);
-        return TransactionMapper.toDTO(tx);
+        return TransactionMapper.toResponseDTO(tx);
     }
 }
+

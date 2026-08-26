@@ -18,6 +18,8 @@ services:
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+    volumes:
+      - ./logs:/app/logs
     depends_on:
       - postgres
       - eureka-server
@@ -36,6 +38,8 @@ services:
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+    volumes:
+      - ./logs:/app/logs
     depends_on:
       - eureka-server
       - zipkin
@@ -56,6 +60,8 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+    volumes:
+      - ./logs:/app/logs
     depends_on:
       - mysql-audit-log
       - eureka-server
@@ -70,6 +76,8 @@ services:
     restart: always
     ports:
       - "8761:8761"
+    volumes:
+      - ./logs:/app/logs
 
   # Frontend dev server (Vite/Node). Web UI that calls backend through the API gateway.
   frontend:
@@ -198,6 +206,8 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+    volumes:
+      - ./logs:/app/logs
     depends_on:
       - mysql-notification
       - eureka-server
@@ -240,7 +250,7 @@ services:
     command: ["-config.file=/etc/promtail/config.yml"]
     volumes:
       - ./monitoring/promtail-config.yml:/etc/promtail/config.yml:ro
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - ./logs:/var/log/app-logs:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
     depends_on:
       - loki
@@ -271,6 +281,8 @@ services:
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+    volumes:
+      - ./logs:/app/logs
     depends_on:
       - postgres
       - eureka-server

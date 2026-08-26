@@ -4,7 +4,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import com.finance.audit_log_service.dto.CreateAuditLogRequest;
-import com.finance.common.dto.TransferEventDTO;
+import com.finance.audit_log_service.dto.event.AuditEvent;
 
 @Service
 public class TransactionConsumer {
@@ -15,20 +15,21 @@ public class TransactionConsumer {
     }
 
     @KafkaListener(id = "audit-log-transaction-initiated-listener", topics = "${app.kafka.topics.transaction-initiated}", groupId = "audit-log-group", containerFactory = "kafkaListenerContainerFactory")
-    public void consumeTransactionInitiated(TransferEventDTO transaction) {
+    public void consumeTransactionInitiated(AuditEvent transaction) {
         CreateAuditLogRequest log = new CreateAuditLogRequest("New transfer initiated: " + transaction.toString());
         auditLogService.createAuditLog(log);
     }
 
     @KafkaListener(id = "audit-log-transaction-completed-listener", topics = "${app.kafka.topics.transaction-completed}", groupId = "audit-log-group", containerFactory = "kafkaListenerContainerFactory")
-    public void consumeTransactionCompleted(TransferEventDTO transaction) {
+    public void consumeTransactionCompleted(AuditEvent transaction) {
         CreateAuditLogRequest log = new CreateAuditLogRequest("Transfer completed: " + transaction.toString());
         auditLogService.createAuditLog(log);
     }
 
     @KafkaListener(id = "audit-log-transaction-failed-listener", topics = "${app.kafka.topics.transaction-failed}", groupId = "audit-log-group", containerFactory = "kafkaListenerContainerFactory")
-    public void consumeTransactionFailed(TransferEventDTO transaction) {
+    public void consumeTransactionFailed(AuditEvent transaction) {
         CreateAuditLogRequest log = new CreateAuditLogRequest("Transfer failed: " + transaction.toString());
         auditLogService.createAuditLog(log);
     }
 }
+

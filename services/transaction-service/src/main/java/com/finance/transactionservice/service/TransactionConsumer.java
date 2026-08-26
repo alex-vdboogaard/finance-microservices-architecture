@@ -3,7 +3,7 @@ package com.finance.transactionservice.service;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-import com.finance.common.dto.TransferEventDTO;
+import com.finance.transactionservice.dto.event.TransferEvent;
 import com.finance.transactionservice.model.Transaction;
 
 @Service
@@ -15,13 +15,14 @@ public class TransactionConsumer {
     }
 
     @KafkaListener(id = "transaction-completed-listener", topics = "transaction.completed", groupId = "transaction-service-group", containerFactory = "kafkaListenerContainerFactory")
-    public void consumeTransactionCompleted(TransferEventDTO transaction) {
+    public void consumeTransactionCompleted(TransferEvent transaction) {
         transactionService.updateStatusAndDescription(transaction, Transaction.TransactionStatus.SUCCESS);
     }
 
     @KafkaListener(id = "transaction-failed-listener", topics = "transaction.failed", groupId = "transaction-service-group", containerFactory = "kafkaListenerContainerFactory")
-    public void consumeTransactionFailed(TransferEventDTO transaction) {
+    public void consumeTransactionFailed(TransferEvent transaction) {
         transactionService.updateStatusAndDescription(transaction, Transaction.TransactionStatus.FAILED);
     }
 
 }
+

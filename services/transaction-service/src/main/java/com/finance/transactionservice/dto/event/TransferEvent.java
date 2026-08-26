@@ -1,12 +1,12 @@
-package com.finance.common.dto;
+package com.finance.transactionservice.dto.event;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@JsonIgnoreProperties(ignoreUnknown=true)
-public record TransferEventDTO(
+@JsonIgnoreProperties(ignoreUnknown = true)
+public record TransferEvent(
         String transactionId,
         Long fromAccountId,
         Long toAccountId,
@@ -15,7 +15,7 @@ public record TransferEventDTO(
         String description,
         LocalDateTime timestamp) implements Serializable {
 
-    public TransferEventDTO(
+    public TransferEvent(
             String transactionId,
             Long fromAccountId,
             Long toAccountId,

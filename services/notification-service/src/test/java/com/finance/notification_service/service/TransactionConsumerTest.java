@@ -15,9 +15,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.finance.common.dto.TransferEventDTO;
 import com.finance.notification_service.dto.CreateNotificationRequest;
 import com.finance.notification_service.dto.NotificationResponse;
+import com.finance.notification_service.dto.event.TransferNotificationEvent;
 
 @ExtendWith(MockitoExtension.class)
 class TransactionConsumerTest {
@@ -32,14 +32,10 @@ class TransactionConsumerTest {
     @DisplayName("Should create notification when transaction completed event is consumed")
     void shouldConsumeTransactionCompleted() {
         // Given
-        TransferEventDTO event = new TransferEventDTO(
-                "tx-123",
+        TransferNotificationEvent event = new TransferNotificationEvent(
                 101L,
                 202L,
-                150.0,
-                "COMPLETED",
-                "Payment for groceries",
-                LocalDateTime.now()
+                "Payment for groceries"
         );
 
         when(notificationService.createNotification(any(CreateNotificationRequest.class)))
@@ -62,14 +58,10 @@ class TransactionConsumerTest {
     @DisplayName("Should propagate exception when notification service fails on transaction completed event")
     void shouldPropagateExceptionWhenServiceFailsOnTransactionCompleted() {
         // Given
-        TransferEventDTO event = new TransferEventDTO(
-                "tx-123",
+        TransferNotificationEvent event = new TransferNotificationEvent(
                 101L,
                 202L,
-                150.0,
-                "COMPLETED",
-                "Payment for groceries",
-                LocalDateTime.now()
+                "Payment for groceries"
         );
 
         when(notificationService.createNotification(any(CreateNotificationRequest.class)))
@@ -85,14 +77,10 @@ class TransactionConsumerTest {
     @DisplayName("Should create notification when transaction failed event is consumed")
     void shouldConsumeTransactionFailed() {
         // Given
-        TransferEventDTO event = new TransferEventDTO(
-                "tx-124",
+        TransferNotificationEvent event = new TransferNotificationEvent(
                 101L,
                 202L,
-                500.0,
-                "FAILED",
-                "Insufficient funds",
-                LocalDateTime.now()
+                "Insufficient funds"
         );
 
         when(notificationService.createNotification(any(CreateNotificationRequest.class)))
@@ -115,14 +103,10 @@ class TransactionConsumerTest {
     @DisplayName("Should propagate exception when notification service fails on transaction failed event")
     void shouldPropagateExceptionWhenServiceFailsOnTransactionFailed() {
         // Given
-        TransferEventDTO event = new TransferEventDTO(
-                "tx-124",
+        TransferNotificationEvent event = new TransferNotificationEvent(
                 101L,
                 202L,
-                500.0,
-                "FAILED",
-                "Insufficient funds",
-                LocalDateTime.now()
+                "Insufficient funds"
         );
 
         when(notificationService.createNotification(any(CreateNotificationRequest.class)))
@@ -138,14 +122,10 @@ class TransactionConsumerTest {
     @DisplayName("Should handle event with null description without throwing NullPointerException")
     void shouldHandleNullDescriptionInEvent() {
         // Given
-        TransferEventDTO event = new TransferEventDTO(
-                "tx-125",
+        TransferNotificationEvent event = new TransferNotificationEvent(
                 101L,
                 202L,
-                50.0,
-                "FAILED",
-                null,
-                LocalDateTime.now()
+                null
         );
 
         when(notificationService.createNotification(any(CreateNotificationRequest.class)))
@@ -160,3 +140,5 @@ class TransactionConsumerTest {
         assertThat(captor.getValue().description()).isEqualTo("Transfer failed: null");
     }
 }
+
+

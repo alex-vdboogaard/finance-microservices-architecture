@@ -8,6 +8,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.finance.accountservice.dto.CreateAccountRequest;
+import com.finance.accountservice.dto.event.TransferEvent;
 import com.finance.accountservice.exception.AccountNotFoundException;
 import com.finance.accountservice.exception.InvalidAmountException;
 import com.finance.accountservice.exception.UserNotFoundException;
@@ -15,7 +16,6 @@ import com.finance.accountservice.model.Account;
 import com.finance.accountservice.model.User;
 import com.finance.accountservice.repository.AccountRepository;
 import com.finance.accountservice.repository.UserRepository;
-import com.finance.common.dto.TransferEventDTO;
 
 import jakarta.transaction.Transactional;
 
@@ -61,7 +61,7 @@ public class AccountService {
     }
 
     @Transactional
-    public TransferEventDTO transferMoney(TransferEventDTO transfer) {
+    public TransferEvent transferMoney(TransferEvent transfer) {
         String status;
         String description;
 
@@ -89,7 +89,7 @@ public class AccountService {
             description = e.getMessage() != null ? e.getMessage() : "Transfer failed";
         }
 
-        return new TransferEventDTO(
+        return new TransferEvent(
                 transfer.transactionId(),
                 transfer.fromAccountId(),
                 transfer.toAccountId(),
