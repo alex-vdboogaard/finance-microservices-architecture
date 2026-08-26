@@ -14,7 +14,6 @@ pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
 
-*.md
 build
 # Spring Boot logs and PID files
 *.log
@@ -94,8 +93,6 @@ kafka-data
 *.metrics
 metrics/
 prometheus_data/
-grafana/
-*.dashboard.json
 /logs/actuator/
 
 # ------------------------------

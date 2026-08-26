@@ -8,14 +8,33 @@ scrape_configs:
       - targets:
           - prometheus:9090
 
-  - job_name: audit-log-service
+  - job_name: api-gateway
     metrics_path: /actuator/prometheus
     static_configs:
       - targets:
-          - audit-log-service:8001
+          - api-gateway:8080
+
+  - job_name: account-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets:
+          - account-service:8005
 
   - job_name: transaction-service
     metrics_path: /actuator/prometheus
     static_configs:
       - targets:
           - transaction-service:8003
+
+  - job_name: audit-log-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets:
+          - audit-log-service:8001
+
+  - job_name: notification-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets:
+          - notification-service:8007
+
