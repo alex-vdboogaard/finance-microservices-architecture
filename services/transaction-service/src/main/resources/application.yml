@@ -58,6 +58,7 @@ logging:
     root: INFO
     org.apache.kafka: WARN
     org.springframework.kafka: WARN
+    com.netflix.discovery: WARN
 
 management:
   endpoints:

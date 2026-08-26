@@ -26,6 +26,18 @@ schema_config:
         prefix: index_
         period: 24h
 
+compactor:
+  working_directory: /loki/compactor
+  shared_store: filesystem
+  compaction_interval: 10m
+  retention_enabled: true
+  retention_delete_delay: 2h
+
+limits_config:
+  retention_period: 168h
+  reject_old_samples: true
+  reject_old_samples_max_age: 168h
+
 ruler:
   alertmanager_url: http://localhost:9093
   rule_path: /loki/rules-temp
@@ -33,3 +45,4 @@ ruler:
     kvstore:
       store: inmemory
   enable_api: true
+

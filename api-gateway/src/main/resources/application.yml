@@ -104,6 +104,9 @@ management:
 logging:
   pattern:
     level: "%5p [%X{traceId:-},%X{spanId:-}]"
+  level:
+    root: INFO
+    com.netflix.discovery: WARN
 
 eureka:
   client:
